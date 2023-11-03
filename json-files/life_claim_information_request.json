@@ -1,0 +1,78 @@
+{
+  "claimNumber": "",
+  "claimChecklist": {
+    "completedDeathCertificate": [
+      "Yes",
+      "No"
+    ],
+    "attachedDeathCertificate": [
+      "Yes",
+      "No"
+    ],
+    "completedClaimSubmission": [
+      "Yes",
+      "No"
+    ]
+  },
+  "deceasedInformation": {
+    "deceasedName": "",
+    "dateOfBirth": "",
+    "dateOfDeath": ""
+  },
+  "medicalInformation": {
+    "causeOfDeath": "",
+    "deceasedHospitalized": [
+      "Yes (if yes, date admitted)",
+      "No"
+    ],
+    "hospitalName": "",
+    "hospitalAddress": "",
+    "hospitalContactNumber": "",
+    "attendingPhysician": {
+      "attendingPhysicianName": "",
+      "attendingPhysicianAddress": "",
+      "attendingPhysicianContactNumber": ""
+    },
+    "familyPhysician": {
+      "familyPhysicianName": "",
+      "familyPhysicianAddress": "",
+      "familyPhysicianContactNumber": ""
+    },
+    "pastPhysicians": [
+      {
+        "physicianName": "",
+        "physicianAddress": ""
+      },
+      {
+        "physicianName": "",
+        "physicianAddress": ""
+      },
+      {
+        "physicianName": "",
+        "physicianAddress": ""
+      }
+    ]
+  },
+  "employmentInformation": {
+    "occupation": "",
+    "employer": "",
+    "workAddress": "",
+    "lastDayWorked": "",
+    "employerContactInformation": "",
+    "reasonInsuredStoppedWorking": [
+      "Normal retirement",
+      "Disability retirement",
+      "Illness",
+      "Death",
+      "Other (please specify)"
+    ]
+  },
+  "kinInformation": {
+    "nameOfKin": "",
+    "kinAddress": "",
+    "relationshipToInsured": "",
+    "kinContactNumber": "",
+    "kinSignature": "",
+    "dateSigned": ""
+  }
+}
