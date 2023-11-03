@@ -27,7 +27,6 @@
     ],
     "hospitalName": "",
     "hospitalAddress": "",
-    "hospitalContactNumber": "",
     "attendingPhysician": {
       "attendingPhysicianName": "",
       "attendingPhysicianAddress": "",
@@ -56,9 +55,9 @@
   "employmentInformation": {
     "occupation": "",
     "employer": "",
+    "dateLastWorked": "",
     "workAddress": "",
-    "lastDayWorked": "",
-    "employerContactInformation": "",
+    "employerContactNumber": "",
     "reasonInsuredStoppedWorking": [
       "Normal retirement",
       "Disability retirement",
