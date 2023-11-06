@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface DataAccessInterface extends MongoRepository<Client, Integer> {
+public interface ClientDataAccessInterface extends MongoRepository<Client, Integer> {
     Optional<Client> findClientById(int clientId);
 }
