@@ -14,7 +14,6 @@ public class LoginInteractor implements LoginInputBoundary{
 //        this.loginPresenter = LoginOutputBoundary; // TODO
     }
 
-
     @Override
     public void execute(LoginInputData loginInputData) {
         /**
