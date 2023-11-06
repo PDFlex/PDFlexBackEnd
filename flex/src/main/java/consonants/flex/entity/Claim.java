@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 @Document(collection = "claims")
 @Data
-public abstract class Claim {
+public class Claim {
 
     private ArrayList<Form> forms;
     private final int claimId;
