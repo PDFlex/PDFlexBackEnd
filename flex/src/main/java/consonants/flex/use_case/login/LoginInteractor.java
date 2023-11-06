@@ -8,6 +8,14 @@ public class LoginInteractor implements LoginInputBoundary{
     final LoginClientDataAccessInterface clientDataAccessObject;
 //    final LoginOutputBoundary loginPresenter; // TODO
 
+
+
+
+
+
+
+
+
     public LoginInteractor(LoginClientDataAccessInterface clientDataAccessObject,
                            LoginOutputBoundary loginOutputBoundary) {
         this.clientDataAccessObject = clientDataAccessObject;
