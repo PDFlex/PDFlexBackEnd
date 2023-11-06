@@ -56,6 +56,5 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
         // Need to update presenter
 
 
-
     }
 }
