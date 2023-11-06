@@ -31,6 +31,12 @@ public class DataAccessObject implements CreateNewClaimDataAccessInterface {
         return false;
     }
 
+
+    public Client createClient(int clientId, String firstName, String lastName) {
+        Client client = clientDataAccessObject.insert(new Client(clientId, firstName, lastName));
+        return client;
+    }
+
     public Claim createClaim(ArrayList<Form> forms, int status, int clientId, int claimId) {
         Claim claim = claimDataAccessObject.insert(new Claim(forms, status, clientId, claimId));
 
@@ -42,8 +48,14 @@ public class DataAccessObject implements CreateNewClaimDataAccessInterface {
         return claim;
     }
 
-    public Client createClient(int clientId, String firstName, String lastName) {
-        Client client = clientDataAccessObject.insert(new Client(clientId, firstName, lastName));
-        return client;
+    public Form createForm(int formId, int claimId, int clientId) {
+        Form form = formDataAccessObject.insert(new Form(formId, claimId, clientId));
+
+        mongoTemplate.update(Claim.class)
+                .matching(Criteria.where("claimId").is(claimId))
+                .apply(new Update().push("forms").value(form))
+                .first();
+
+        return form;
     }
 }

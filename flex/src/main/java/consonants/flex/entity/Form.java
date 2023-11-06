@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "forms")
 @Data
 @AllArgsConstructor
-public abstract class Form {
+public class Form {
 
     private boolean confirmed;
     private boolean filledOut;
