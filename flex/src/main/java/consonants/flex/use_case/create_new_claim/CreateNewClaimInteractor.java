@@ -53,6 +53,7 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
         client.client.addClaim(lifeClaim);
 
         // Need to update the client's data in the Database
+        createNewClaimDataAccessObject.createClaim(forms, status, clientId, claimId);
 
         // Need to update presenter
 
