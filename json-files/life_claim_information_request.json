@@ -46,13 +46,7 @@
     "dateLastWorked": "",
     "workAddress": "",
     "employerContactNumber": "",
-    "reasonInsuredStoppedWorking": [
-      "Normal retirement",
-      "Disability retirement",
-      "Illness",
-      "Death",
-      "Other (please specify)"
-    ]
+    "reasonInsuredStoppedWorking": ""
   },
   "kinInformation": {
     "nameOfKin": "",
