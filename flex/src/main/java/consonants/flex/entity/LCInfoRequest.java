@@ -14,11 +14,11 @@ public class LCInfoRequest {
 
     // **** medical info
     private String causeOfDeath;
-    // if true , we need the date of hospitalization
-    private boolean deceasedHospitalized;
+    private boolean deceasedHospitalized;  // if true , we need the date of hospitalization
     private String hospitalName;
     private String hospitalAddress;
-    private ArrayList pastPhysicians;  // unsure about using type ArrayList
+    private ArrayList<String> pastPhysicianNames;
+    private ArrayList<String> pastPhysicianAddresses;
 
     // ****** attending physician info
     private String attendingPhysicianName;
@@ -45,7 +45,7 @@ public class LCInfoRequest {
     private String kinContactNumber;
     private String kinSignature;
 
-    public LCInfoRequest(String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList pastPhysicians, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
+    public LCInfoRequest(String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
         this.dateOfBirth = dateOfBirth;
         this.completedDeathCertificate = completedDeathCertificate;
         this.attachedDeathCertificate = attachedDeathCertificate;
@@ -57,7 +57,8 @@ public class LCInfoRequest {
         this.attendingPhysicianName = attendingPhysicianName;
         this.attendingPhysicianAddress = attendingPhysicianAddress;
         this.attendingPhysicianContactNumber = attendingPhysicianContactNumber;
-        this.pastPhysicians = pastPhysicians;
+        this.pastPhysicianNames = pastPhysicianNames;
+        this.pastPhysicianAddresses = pastPhysicianAddresses;
         this.familyPhysicianName = familyPhysicianName;
         this.familyPhysicianAddress = familyPhysicianAddress;
         this.familyPhysicianContactNumber = familyPhysicianContactNumber;
