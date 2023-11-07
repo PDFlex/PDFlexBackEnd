@@ -43,10 +43,11 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
         //TODO: Function that generates new claim id, tracking prior ones
         int claimId = 1;
         // TODO: use enum for statuses
-        String status = "Incomplete";
+        int status = 0;
+        int clientId = 1;
 
         // Initialize Claim Object
-        LifeClaim lifeClaim = new LifeClaim(forms, claimId, status);
+        LifeClaim lifeClaim = new LifeClaim(forms, status, clientId, claimId);
 
         // Update Client's Claims attribute with new claim object
         client.client.addClaim(lifeClaim);

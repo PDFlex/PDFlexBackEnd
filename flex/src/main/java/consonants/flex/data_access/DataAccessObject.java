@@ -33,7 +33,8 @@ public class DataAccessObject implements CreateNewClaimDataAccessInterface {
 
 
     public Client createClient(int clientId, String firstName, String lastName) {
-        Client client = clientDataAccessObject.insert(new Client(clientId, firstName, lastName));
+        ArrayList<Claim> claimsList = new ArrayList<Claim>();
+        Client client = clientDataAccessObject.insert(new Client(claimsList, clientId, firstName, lastName));
         return client;
     }
 

@@ -9,7 +9,7 @@ public class Client {
     private final String firstName;
     private final String lastName;
 
-    Client(ArrayList<Claim> claimsList, int id, String firstName, String lastName){
+    public Client(ArrayList<Claim> claimsList, int id, String firstName, String lastName){
         this.claimsList = claimsList;
         this.id = id;
         this.firstName = firstName;
