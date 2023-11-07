@@ -13,17 +13,26 @@ public class Form {
     private boolean filledOut;
     private boolean inProgress;
     private int formId;
-    private int claimId;
     private int clientId;
+    // fields in common across all three forms
+    private int claimId;
+    private String deceasedName;
+    private String dateOfDeath;
+    private String dateSigned;
 
 
-    public Form(int formId, int claimId, int clientId) {
+
+
+    public Form(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned) {
         this.confirmed = false;
         this.filledOut = false;
         this.inProgress = true;
         this.formId = formId; // randomly generate & will need to check that formId doesn't already exist when implementing FormUseCase - discuss further
         this.claimId = claimId;
         this.clientId = clientId;
+        this.deceasedName = deceasedName;
+        this.dateOfDeath = dateOfDeath;
+        this.dateSigned = dateSigned;
     }
 
     // Consider checkConfirmed(), checkFilledOut() and checkInProgress() to be
