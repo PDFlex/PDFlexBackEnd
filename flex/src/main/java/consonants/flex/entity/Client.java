@@ -28,6 +28,10 @@ public class Client {
         // Reconsider the return type. Return the claim that was deleted? Return a String with "sucesss" or "failure?"
         // TODO
     }
+    public void addClaim(Claim claim){
+        // Add a claim to the client's claimslist
+        claimsList.add(claim);
+    }
 
 
 
