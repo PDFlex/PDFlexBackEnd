@@ -1,10 +1,10 @@
-package consonants.flex.data_access;
+package consonants.flex.data_access.mongo_data_access;
 
 import consonants.flex.entity.Client;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface ClientDataAccessInterface extends MongoRepository<Client, Integer> {
+public interface ClientRepository extends MongoRepository<Client, Integer> {
     Optional<Client> findClientById(int clientId);
 }
