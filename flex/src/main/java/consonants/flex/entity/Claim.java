@@ -3,6 +3,8 @@ package consonants.flex.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 @Data
 public class Claim {
 
+    @Id
+    private ObjectId id; // mongoDB uses a variable of type ObjectId for the fields
     private ArrayList<Form> forms;
     private final int claimId;
     private final int clientId;

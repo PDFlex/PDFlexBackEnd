@@ -2,6 +2,8 @@ package consonants.flex.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 public class Client {
 
+    @Id
+    private ObjectId id;
     private ArrayList<Claim> claimsList; // Not final because it changes
     private final int clientId;
     private final String firstName;

@@ -3,21 +3,27 @@ package consonants.flex.data_access.mongo_data_access;
 import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
-import consonants.flex.use_case.create_new_claim.CreateNewClaimDataAccessInterface;
+import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
 
-public class MongoDataAccessObject implements CreateNewClaimDataAccessInterface {
-
+    @Autowired
     private ClientRepository clientRepository;
+    @Autowired
     private ClaimRepository claimRepository;
+    @Autowired
     private FormRepository formRepository;
+    @Autowired
     private MongoTemplate mongoTemplate;
 
     public List<Client> allClients() {return clientRepository.findAll();}
