@@ -13,6 +13,11 @@ Created by Team Consonants: Ben, Jiya, Lana, Sarah, Vithu!
 2. Extract zip & open project in IDE
 3. Navigate to flex > src > main > java > consonants.flex > view > FlexApplication
 4. Run FlexApplication
+   
+The backend will now be hosted on http://localhost:8080/.
+
+TODO: Provide information on how to access different parts of the database from different subdirectories on localhost8080.
+
 ### Notes When Attempting to Run
 - You require specific fields in your .env file, located in flex > src > main > resources
   - For Team Consonants members, go to our team Google Drive > Backend Files
