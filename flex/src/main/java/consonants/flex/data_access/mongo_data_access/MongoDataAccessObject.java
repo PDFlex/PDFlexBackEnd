@@ -26,6 +26,7 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+
     public List<Client> allClients() {return clientRepository.findAll();}
     public List<Claim> allClaims() {return claimRepository.findAll();}
     public List<Form> allForms() {return formRepository.findAll();}
