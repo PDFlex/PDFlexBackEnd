@@ -1,4 +1,4 @@
-package consonants.flex.app;
+package consonants.flex;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
