@@ -7,6 +7,8 @@ package consonants.flex.interface_adapter.login;
 
 import consonants.flex.Information;
 import consonants.flex.InformationService;
+import consonants.flex.use_case.login.LoginInputBoundary;
+import consonants.flex.use_case.login.LoginInteractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +21,18 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RequestMapping("/login") // This is the subpage that we want the LoginUseCase to work on
 public class LoginController {
-    // ignore this comment
-    @Autowired
-    private InformationService informationService;
-    @GetMapping
-    public ResponseEntity<List<Information>> getAllInformation() {
-        return new ResponseEntity<List<Information>>(informationService.allInformation(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{firstName}")
-    public ResponseEntity<Optional<Information>> getSingleInformation(@PathVariable String firstName) {
-        return new ResponseEntity<Optional<Information>>(informationService.singleInformation(firstName), HttpStatus.OK);
-    }
+    //@Autowired
+    private LoginInputBoundary loginUseCaseInteractor; // Replaced informationService
+//    public LoginController() {
+//        this.loginUseCaseInteractor = new LoginInteractor();
+//    }
+//    @GetMapping
+//    public ResponseEntity<List<Information>> getAllInformation() {
+//        return new ResponseEntity<List<Information>>(informationService.allInformation(), HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/{firstName}")
+//    public ResponseEntity<Optional<Information>> getSingleInformation(@PathVariable String firstName) {
+//        return new ResponseEntity<Optional<Information>>(informationService.singleInformation(firstName), HttpStatus.OK);
+//    }
 }

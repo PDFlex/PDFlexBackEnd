@@ -14,15 +14,15 @@ import consonants.flex.entity.Client;
 
 public interface LoginClientDataAccessInterface {
     /**
-     * @param id the id of the Client.
+     * @param clientId the id of the Client.
      * @return True if the Client with the given id exists in the database; False otherwise.
      */
-    boolean existsById(int id);
+//    boolean clientExistsById(int clientId);
 
     /**
      * Unsure if this method is needed in this interface; will delete if unneeded.
-     * @param id the id of the Client.
+     * @param clientId the id of the Client.
      * @return the Client.
      */
-    Client get(int id);
+    Client getClientById(int clientId);
 }

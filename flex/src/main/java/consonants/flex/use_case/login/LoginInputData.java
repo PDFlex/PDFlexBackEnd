@@ -12,9 +12,9 @@ public class LoginInputData {
     /**
      * We are assuming that the accountId String that was inputted in the HTML field has already been converted to int.
      */
-    final private int accountId;
+    final private int clientId;
 
-    public LoginInputData(int accountId) { this.accountId = accountId; }
+    public LoginInputData(int clientId) { this.clientId = clientId; }
 
-    int getAccountId() { return accountId; }
+    int getClientId() { return clientId; }
 }
