@@ -4,6 +4,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import consonants.flex.use_case.get_user_info.GetUserInfoDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, GetUserInfoDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -30,14 +31,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     public List<Client> allClients() {return clientRepository.findAll();}
     public List<Claim> allClaims() {return claimRepository.findAll();}
     public List<Form> allForms() {return formRepository.findAll();}
-
-//    @Override
-//    public boolean claimsExist() {
-//        if (!allClaims().isEmpty()) {
-//            return true;
-//        }
-//        return false;
-//    }
 
     public Client createClient(int clientId, String firstName, String lastName) {
         Client client = clientRepository.insert(new Client(clientId, firstName, lastName));
