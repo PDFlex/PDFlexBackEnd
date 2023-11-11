@@ -3,7 +3,7 @@ package consonants.flex.interface_adapter.view_all_claims;
 
 import consonants.flex.entity.Claim;
 
-import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import consonants.flex.use_case.view_all_claims.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +16,12 @@ import java.util.List;
 @RequestMapping("/claims")
 public class ViewAllClaimsController {
     @Autowired
-    private ViewAllClaimsDataAccessInterface dataAccessInterface;
+    private ViewAllClaimsInputBoundary viewAllClaimsInteractor;
 
     @GetMapping
     public ResponseEntity<List<Claim>> getAllClaims() {
-        return new ResponseEntity<List<Claim>>(dataAccessInterface.allClaims(), HttpStatus.OK);
+        return viewAllClaimsInteractor.execute();
+        }
+
     }
-}
+

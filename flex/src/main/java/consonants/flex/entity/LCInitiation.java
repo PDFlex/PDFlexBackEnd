@@ -1,4 +1,9 @@
 package consonants.flex.entity;
 
-public class LCInitiation {
+import org.bson.types.ObjectId;
+
+public class LCInitiation extends Form {
+    public LCInitiation(int formId, int claimId, int clientId) {
+        super(formId, claimId, clientId);
+    }
 }
