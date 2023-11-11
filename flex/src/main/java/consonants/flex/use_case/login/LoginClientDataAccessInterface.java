@@ -12,17 +12,21 @@ package consonants.flex.use_case.login;
 
 import consonants.flex.entity.Client;
 
+import java.util.Optional;
+
 public interface LoginClientDataAccessInterface {
     /**
      * @param clientId the id of the Client.
      * @return True if the Client with the given id exists in the database; False otherwise.
      */
-//    boolean clientExistsById(int clientId);
+//    Boolean clientExistsById(int clientId);
 
     /**
      * Unsure if this method is needed in this interface; will delete if unneeded.
      * @param clientId the id of the Client.
      * @return the Client.
      */
-    Client getClientById(int clientId);
+    Optional<Client> findClientById(int clientId);
+
+    Client findClient(int clientId);
 }

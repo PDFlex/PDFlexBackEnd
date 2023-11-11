@@ -11,7 +11,6 @@ import java.util.ArrayList;
 @Document(collection = "clients")
 @Data
 @AllArgsConstructor
-
 public class Client {
 
     @Id

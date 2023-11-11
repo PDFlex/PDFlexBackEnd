@@ -5,6 +5,7 @@ import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface {
@@ -87,13 +89,26 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         Form form = (Form) mongoTemplate.find(query, Form.class);
         return form;
     }
+    public Optional<Client> findClientById(int clientId){
+        Optional<Client> client = clientRepository.findById(clientId);
+        return client;
+    }
+
+    public Optional<Client> benFindClientById(int clientId){
+        Optional<Client> client = clientRepository.findById(clientId);
+        return client;
+    }
 
     // @Override
-    public Client getClientById(int clientId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("clientId").is(clientId));
-        Client client = (Client) mongoTemplate.find(query, Client.class);
-        return client;
-        // TODO
-    }
+//    public Optional<Client> getClientById(int clientId) {
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("clientId").is(clientId));
+//
+//        Boolean b = claimRepository.existsById(new ObjectId("6547fb580b3c430699743827"));
+
+//        mongoTemplate.find(query, Client.class);
+//        Client client = (Client) mongoTemplate.find(query, Client.class);
+//        return client;
+//    }
+
 }
