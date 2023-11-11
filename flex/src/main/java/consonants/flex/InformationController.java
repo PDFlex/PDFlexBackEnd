@@ -14,13 +14,17 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RequestMapping("/information")
 public class InformationController {
-    // ignore this comment
-    @Autowired
+    @Autowired // Automatically injects an informationService object into the InformationController.
     private InformationService informationService;
     @GetMapping
     public ResponseEntity<List<Information>> getAllInformation() {
         return new ResponseEntity<List<Information>>(informationService.allInformation(), HttpStatus.OK);
     }
+
+//    @GetMapping("/{firstName}")
+//    public ResponseEntity<Optional<Information>> getSingleInformation(@PathVariable String firstName) {
+//        return new ResponseEntity<Optional<Information>>(informationService.singleInformation(firstName), HttpStatus.OK);
+//    }
 
     @GetMapping("/{firstName}")
     public ResponseEntity<Optional<Information>> getSingleInformation(@PathVariable String firstName) {

@@ -9,7 +9,7 @@ import java.util.Optional;
 @Service
 public class InformationService {
     // ignore this comment
-    @Autowired
+    @Autowired // automatically inject an InformationRepository object into InformationService ?
     private InformationRepository informationRepository;
     public List<Information> allInformation() {
         return informationRepository.findAll();

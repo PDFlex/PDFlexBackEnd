@@ -5,9 +5,13 @@
 package consonants.flex.use_case.login;
 
 import consonants.flex.entity.Client;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service // Interactors become equivalent to Service (as in InformationService).
 public class LoginInteractor implements LoginInputBoundary{
-    final LoginClientDataAccessInterface clientDataAccessObject;
+//    final LoginClientDataAccessInterface clientDataAccessObject; // No DAO? because LoginInteractor is never manually instantiated.
 
     public LoginInteractor(LoginClientDataAccessInterface clientDataAccessObject){
         // Here, we do not include an OutputBoundary.
@@ -19,26 +23,19 @@ public class LoginInteractor implements LoginInputBoundary{
     }
 
     @Override
-    public LoginOutputData execute(LoginInputData loginInputData) {
+    public Optional<String> execute(LoginInputData loginInputData) {
         // For simplicity's sake, we could directly pass the clientId instead of an entire LoginInputData object.
         // Using an InputData object is beneficial when multiple values are being passed
         // as it encapsulates everything into one.
 
         int clientId = loginInputData.getClientId();
-        //boolean doesClientExist = clientDataAccessObject.existsById(clientId)
-        Client client = clientDataAccessObject.getClientById(clientId);
-        LoginOutputData loginOutputData = new LoginOutputData(clientId, true);
-        System.out.println(client);
-        return loginOutputData;
-//        if (client) {
-        // loginPresenter.prepareFailView("Client with ID " + toString(clientId) + " does not exist!");
-//        } else {
-//            boolean useCaseFailed = false;
-//            Client client = clientDataAccessObject.get(clientId);
-//            LoginOutputData loginOutputData = new LoginOutputData(clientId, useCaseFailed);
-            // loginPresenter.prepareSuccessView(loginOutputData);
-            // TODO: how do we trigger ViewClaimsDashboardUseCase?
-//        }
-
+        boolean clientExists = clientDataAccessObject.getClientById(clientId) == null;
+        String err;
+        if (clientExists) {
+            err = "yay";
+        } else {
+            err = "boo! error!";
+        }
+        return err.describeConstable(); // Changes type from String to Optional<String>.
     }
 }

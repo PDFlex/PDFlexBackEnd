@@ -4,6 +4,8 @@
 
 package consonants.flex.use_case.login;
 
+import java.util.Optional;
+
 public interface LoginInputBoundary {
 
     /**
@@ -11,5 +13,5 @@ public interface LoginInputBoundary {
      * Normally in CA, the return value is 'void'. See the comments in the LoginInteractor for an explanation
      * as to why we return LoginOutputData.
      */
-    LoginOutputData execute(LoginInputData loginInputData);
+    Optional<String> execute(LoginInputData loginInputData);
 }
