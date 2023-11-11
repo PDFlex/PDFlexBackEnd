@@ -1,18 +1,9 @@
 {
   "claimNumber": "",
   "claimChecklist": {
-    "completedDeathCertificate": [
-      "Yes",
-      "No"
-    ],
-    "attachedDeathCertificate": [
-      "Yes",
-      "No"
-    ],
-    "completedClaimSubmission": [
-      "Yes",
-      "No"
-    ]
+    "completedDeathCertificate": false,
+    "attachedDeathCertificate": false,
+    "completedClaimSubmission": false
   },
   "deceasedInformation": {
     "deceasedName": "",
@@ -21,10 +12,7 @@
   },
   "medicalInformation": {
     "causeOfDeath": "",
-    "deceasedHospitalized": [
-      "Yes (if yes, date admitted)",
-      "No"
-    ],
+    "deceasedHospitalized": "",
     "hospitalName": "",
     "hospitalAddress": "",
     "attendingPhysician": {
@@ -58,13 +46,7 @@
     "dateLastWorked": "",
     "workAddress": "",
     "employerContactNumber": "",
-    "reasonInsuredStoppedWorking": [
-      "Normal retirement",
-      "Disability retirement",
-      "Illness",
-      "Death",
-      "Other (please specify)"
-    ]
+    "reasonInsuredStoppedWorking": ""
   },
   "kinInformation": {
     "nameOfKin": "",
