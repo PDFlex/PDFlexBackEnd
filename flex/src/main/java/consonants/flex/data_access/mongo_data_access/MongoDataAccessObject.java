@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
@@ -31,13 +32,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     public List<Claim> allClaims() {return claimRepository.findAll();}
     public List<Form> allForms() {return formRepository.findAll();}
 
-//    @Override
-//    public boolean claimsExist() {
-//        if (!allClaims().isEmpty()) {
-//            return true;
-//        }
-//        return false;
-//    }
 
     public Client createClient(int clientId, String firstName, String lastName) {
         Client client = clientRepository.insert(new Client(clientId, firstName, lastName));
@@ -66,24 +60,42 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
         return form;
     }
 
-    public Client findClient(int clientId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("clientId").is(clientId));
-        Client client = (Client) mongoTemplate.find(query, Client.class);
+    public Optional<Client> findClient(int clientId) {
+//        The below commented out method body works. It may be a better way to deal with null returns. i.e. when lst is empty.
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("clientId").is(clientId));
+//        List<Client> lst = mongoTemplate.find(query, Client.class);
+//        return lst.get(0);
+        Optional<Client> client = clientRepository.findClientByClientId(clientId);
         return client;
     }
 
-    public Claim findClaim(int claimId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("claimId").is(claimId));
-        Claim claim = (Claim) mongoTemplate.find(query, Claim.class);
+    public Optional<Claim> findClaim(int claimId) {
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("claimId").is(claimId));
+//        Claim claim = (Claim) mongoTemplate.find(query, Claim.class);
+        Optional<Claim> claim = claimRepository.findClaimByClaimId(claimId);
         return claim;
     }
 
-    public Form findForm(int formId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("formId").is(formId));
-        Form form = (Form) mongoTemplate.find(query, Form.class);
+    public Optional<Form> findForm(int formId) {
+//        Query query = new Query();
+//        query.addCriteria(Criteria.where("formId").is(formId));
+//        Form form = (Form) mongoTemplate.find(query, Form.class);
+        Optional<Form> form = formRepository.findFormByFormId(formId);
         return form;
+    }
+
+    public boolean loginClientExists(int clientId, String firstName, String lastName) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("clientId").is(clientId));
+        query.addCriteria(Criteria.where("firstName").is(firstName));
+        query.addCriteria(Criteria.where("lastName").is(lastName));
+        List<Client> lst = mongoTemplate.find(query, Client.class);
+
+        if (!lst.isEmpty()) {
+            return true;
+        }
+        return false;
     }
 }

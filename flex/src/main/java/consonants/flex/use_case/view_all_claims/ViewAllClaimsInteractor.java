@@ -15,17 +15,17 @@ public class ViewAllClaimsInteractor implements ViewAllClaimsInputBoundary{
     final ViewAllClaimsDataAccessInterface claimsDataAccessObject;
 
     @Autowired
-    final ViewAllClaimsOutputBoundary outputBoundary;
+    final ViewAllClaimsOutputBoundary viewAllClaimsPresenter;
 
     public ViewAllClaimsInteractor(ViewAllClaimsDataAccessInterface claimsDataAccessObject, ViewAllClaimsOutputBoundary outputBoundary) {
         this.claimsDataAccessObject = claimsDataAccessObject;
-        this.outputBoundary = outputBoundary;
+        this.viewAllClaimsPresenter = outputBoundary;
     }
 
     @Override
     public ResponseEntity<List<Claim>> execute() {
         List<Claim> claimsList = (claimsDataAccessObject.allClaims());
         ViewAllClaimsOutputData outputData = new ViewAllClaimsOutputData(claimsList);
-        return new ResponseEntity<List<Claim>>(outputBoundary.viewAllClaims(outputData), HttpStatus.OK);
+        return new ResponseEntity<List<Claim>>(viewAllClaimsPresenter.viewAllClaims(outputData), HttpStatus.OK);
     }
 }
