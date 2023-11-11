@@ -49,8 +49,8 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
         return claim;
     }
 
-    public Form createForm(int formId, int claimId, int clientId) {
-        Form form = formRepository.insert(new Form(formId, claimId, clientId));
+    public Form createForm(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned) {
+        Form form = formRepository.insert(new Form(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned));
 
         mongoTemplate.update(Claim.class)
                 .matching(Criteria.where("claimId").is(claimId))
