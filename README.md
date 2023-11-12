@@ -11,7 +11,7 @@ Created by Team Consonants: Ben, Jiya, Lana, Sarah, Vithu!
 ## How to Run Locally
 1. Download project (Green "Code" button > "Download ZIP")
 2. Extract zip & open project in IDE
-3. Navigate to flex > src > main > java > consonants.flex > view > FlexApplication
+3. Navigate to flex > src > main > java > consonants.flex > FlexApplication
 4. Run FlexApplication
    
 The backend will now be hosted on http://localhost:8080/.
