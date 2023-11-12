@@ -10,13 +10,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 @Document(collection = "claims")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Claim {
 
     @Id
     private ObjectId id; // mongoDB uses a variable of type ObjectId for the fields
     private ArrayList<Form> forms;
-    private final int claimId;
-    private final int clientId;
+    private int claimId;
+    private int clientId;
     private int status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
 
 

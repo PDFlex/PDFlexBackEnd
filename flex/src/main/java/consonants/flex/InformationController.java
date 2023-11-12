@@ -1,5 +1,8 @@
 package consonants.flex;
 
+import consonants.flex.data_access.mongo_data_access.ClientRepository;
+import consonants.flex.data_access.mongo_data_access.MongoDataAccessObject;
+import consonants.flex.entity.Client;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
@@ -14,18 +17,14 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RequestMapping("/information")
 public class InformationController {
-    @Autowired // Automatically injects an informationService object into the InformationController.
+    // ignore this comment
+    @Autowired
     private InformationService informationService;
+
     @GetMapping
     public ResponseEntity<List<Information>> getAllInformation() {
         return new ResponseEntity<List<Information>>(informationService.allInformation(), HttpStatus.OK);
     }
-
-//    @GetMapping("/{firstName}")
-//    public ResponseEntity<Optional<Information>> getSingleInformation(@PathVariable String firstName) {
-//        return new ResponseEntity<Optional<Information>>(informationService.singleInformation(firstName), HttpStatus.OK);
-//    }
-
     @GetMapping("/{firstName}")
     public ResponseEntity<Optional<Information>> getSingleInformation(@PathVariable String firstName) {
         return new ResponseEntity<Optional<Information>>(informationService.singleInformation(firstName), HttpStatus.OK);
