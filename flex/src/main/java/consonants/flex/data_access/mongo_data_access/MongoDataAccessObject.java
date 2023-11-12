@@ -4,6 +4,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -97,5 +98,12 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
             return true;
         }
         return false;
+    }
+
+    public Boolean clientExistsById(int clientId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("clientId").is(clientId));
+        List<Client> lst = mongoTemplate.find(query, Client.class);
+        return lst.get(0) != null;
     }
 }

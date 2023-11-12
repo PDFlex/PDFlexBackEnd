@@ -19,7 +19,7 @@ public class LoginInteractor implements LoginInputBoundary{
     private LoginClientDataAccessInterface clientDataAccessObject;
 
 //    @Autowired
-//    private LoginOutputBoundary loginPresenter;
+//    private LoginOutputBoundary loginPresenter; // Unnecessary for login
     public LoginInteractor(LoginClientDataAccessInterface clientDataAccessObject){ // I don't think this is necessary
         this.clientDataAccessObject = clientDataAccessObject;
     }
@@ -27,9 +27,7 @@ public class LoginInteractor implements LoginInputBoundary{
     @Override
     public ResponseEntity<Boolean> execute(LoginInputData loginInputData) {
         int clientId = loginInputData.getClientId();
-        Boolean doesExist;
-        Optional<Client> c = clientDataAccessObject.findClientById(clientId); // THIS DOESN'T WORK
-        doesExist = (c != null);
+        Boolean doesExist = clientDataAccessObject.clientExistsById(clientId);
         return new ResponseEntity<Boolean>(doesExist, HttpStatus.OK);
     }
 }

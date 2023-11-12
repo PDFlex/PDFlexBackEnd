@@ -19,14 +19,6 @@ public interface LoginClientDataAccessInterface {
      * @param clientId the id of the Client.
      * @return True if the Client with the given id exists in the database; False otherwise.
      */
-//    Boolean clientExistsById(int clientId);
+    Boolean clientExistsById(int clientId);
 
-    /**
-     * Unsure if this method is needed in this interface; will delete if unneeded.
-     * @param clientId the id of the Client.
-     * @return the Client.
-     */
-    Optional<Client> findClientById(int clientId);
-
-    Client findClient(int clientId);
 }
