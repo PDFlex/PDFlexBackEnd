@@ -2,7 +2,7 @@ package consonants.flex.entity;
 
 import java.util.ArrayList;
 
-public class LCInfoRequest {
+public class LCInfoRequest extends Form{
 
     // **** claims checklist
     private boolean completedDeathCertificate;
@@ -45,7 +45,8 @@ public class LCInfoRequest {
     private String kinContactNumber;
     private String kinSignature;
 
-    public LCInfoRequest(String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
+    public LCInfoRequest(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned, String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
+        super(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned);
         this.dateOfBirth = dateOfBirth;
         this.completedDeathCertificate = completedDeathCertificate;
         this.attachedDeathCertificate = attachedDeathCertificate;
@@ -74,7 +75,4 @@ public class LCInfoRequest {
         this.kinContactNumber = kinContactNumber;
         this.kinSignature = kinSignature;
     }
-
-
-
 }

@@ -2,13 +2,20 @@ package consonants.flex.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 
 @Document(collection = "forms")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Form {
 
+    @Id
+    private ObjectId id;
     private boolean confirmed;
     private boolean filledOut;
     private boolean inProgress;
