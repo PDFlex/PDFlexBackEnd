@@ -104,6 +104,10 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         Query query = new Query();
         query.addCriteria(Criteria.where("clientId").is(clientId));
         List<Client> lst = mongoTemplate.find(query, Client.class);
-        return lst.get(0) != null;
+        try{
+            return lst.get(0) != null;
+        }catch(Exception e){
+            return false;
+        }
     }
 }
