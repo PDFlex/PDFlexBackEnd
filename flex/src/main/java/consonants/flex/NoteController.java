@@ -9,7 +9,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/information/pdf")
+@RequestMapping("/pdf")
 public class NoteController {
     @Autowired
     private NoteService noteService;
