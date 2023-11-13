@@ -1,3 +1,8 @@
+/**
+ * Not used for the LoginUseCase.
+ * TODO This class should be deleted before we submit our project
+ */
+
 package consonants.flex.interface_adapter.login;
 
 import consonants.flex.use_case.login.LoginOutputBoundary;

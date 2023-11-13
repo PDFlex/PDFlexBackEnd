@@ -1,5 +1,6 @@
 /**
- * Here, we define the data that gets passed from frontend -> backend after the LoginInteractor has executed.
+ * Not used for the LoginUseCase (LoginInteractor returns a single value -- Boolean)
+ * TODO This class should be deleted before we submit our project
  */
 
 package consonants.flex.use_case.login;
