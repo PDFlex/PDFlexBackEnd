@@ -14,7 +14,7 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
 //        this.createNewClaimPresenter = createNewClaimOutputBoundary;
     }
     @Override
-    public void execute(CreateNewClaimInputData client) {
+    public void execute(CreateNewClaimInputData createNewClaimInputData) {
         /**
          * This method must:
          * - Take in a user object
@@ -40,20 +40,22 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
         forms.add(physicianStatement);
 
 
+        Client curr_client = createNewClaimDataAccessObject.findClient(createNewClaimInputData.clientId);
+
         //TODO: Function that generates new claim id, tracking prior ones
         int claimId = 1;
         // TODO: use enum for statuses
         int status = 0;
-        int clientId = 1;
+//        int clientId = 1;
 
         // Initialize Claim Object
-        LifeClaim lifeClaim = new LifeClaim(forms, status, clientId, claimId);
+        LifeClaim lifeClaim = new LifeClaim(forms, status, curr_client.getId(), claimId);
 
         // Update Client's Claims attribute with new claim object
-        client.client.addClaim(lifeClaim);
+        curr_client.addClaim(lifeClaim);
 
         // Need to update the client's data in the Database
-        createNewClaimDataAccessObject.createClaim(forms, status, clientId, claimId);
+        createNewClaimDataAccessObject.createClaim(forms, status, curr_client.getId(), claimId);
 
         // Need to update presenter
 

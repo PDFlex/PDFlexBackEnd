@@ -19,6 +19,8 @@ public class Client {
     // @ Override? (See CA CommonUser.java)
     public ArrayList<Claim> getClaims(){return claimsList;}
 
+    public int getId(){return id;}
+
     public Claim getClaim(int claimId){
         // TODO
         return null;
