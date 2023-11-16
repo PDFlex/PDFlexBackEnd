@@ -17,7 +17,7 @@ public class Client {
 
     @Id
     private ObjectId id;
-    private ArrayList<Claim> claimsList;
+    private ArrayList<Object> claimsList;
     private int clientId;
     private String firstName;
     private String lastName;
@@ -26,11 +26,11 @@ public class Client {
         this.clientId = clientId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.claimsList = new ArrayList<Claim>();
+        this.claimsList = new ArrayList<Object>();
     }
 
     // @ Override? (See CA CommonUser.java)
-    public ArrayList<Claim> getClaims(){return claimsList;}
+    public ArrayList<Object> getClaims(){return claimsList;}
 
     public Claim getClaim(int claimId){
         // TODO

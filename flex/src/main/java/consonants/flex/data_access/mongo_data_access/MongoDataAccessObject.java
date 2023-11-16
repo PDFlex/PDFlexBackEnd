@@ -1,10 +1,13 @@
 package consonants.flex.data_access.mongo_data_access;
 
+import com.mongodb.client.result.UpdateResult;
 import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -34,12 +37,15 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
 
 
     public Client createClient(int clientId, String firstName, String lastName) {
+        // This creates new client object. Will need to convert this into a ClientFactory class to adhere to CA.
         Client client = clientRepository.insert(new Client(clientId, firstName, lastName));
         return client;
     }
 
-    public Claim createClaim(ArrayList<Form> forms, int status, int clientId, int claimId) {
-        Claim claim = claimRepository.insert(new Claim(forms, status, clientId, claimId));
+    public Claim createClaim(int clientId, int claimId) {
+        // This creates new Claim object. Will need to convert this creation into a ClaimFactory class to adhere to CA.
+        // Updates corresponding Client's list of claims.
+        Claim claim = claimRepository.insert(new Claim(clientId, claimId));
 
         mongoTemplate.update(Client.class)
                 .matching(Criteria.where("clientId").is(clientId))
@@ -50,6 +56,8 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     }
 
     public Form createForm(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned) {
+        // This creates new Form object. Will need to convert this creation into a FormFactory class to adhere to CA.
+        // Updates corresponding Claim's list of forms. Potentially unnecessary method; revisit.
         Form form = formRepository.insert(new Form(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned));
 
         mongoTemplate.update(Claim.class)
@@ -61,36 +69,66 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     }
 
     public Optional<Client> findClient(int clientId) {
-//        The below commented out method body works. It may be a better way to deal with null returns. i.e. when lst is empty.
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("clientId").is(clientId));
-//        List<Client> lst = mongoTemplate.find(query, Client.class);
-//        return lst.get(0);
+        // returns a Client object such that Client.clientId = clientId
         Optional<Client> client = clientRepository.findClientByClientId(clientId);
         return client;
     }
 
+    public List<Client> findClientsStartingWith(String letter) {
+        // can use this template to find clients by the first letter of their first names
+        Query query = new Query();
+        query.addCriteria(Criteria.where("firstName").regex(letter));
+        List<Client> clients = mongoTemplate.find(query, Client.class);
+        return clients;
+    }
+
+    public Client modifyClient(int clientId, String field, Object newEntry) {
+        // can use this template to create methods to modify a specific field in client object
+        // for example, field = "firstName", will update the firstName attribute of the Client
+        // findAndModify returns a Client Object; can change updateClient to return void, boolean, etc, as needed
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set(field, newEntry);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, Client.class);
+    }
+
+    public Client modifyFirstName(int clientId, String newFirstName) {
+        // Like previous method, this finds a Client using a criteria. This method is pre-set
+        // to the firstName field. Returns a Client Object.
+        // can change return type of modifyFirstName as needed
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set("firstName", newFirstName);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+    }
+
+    public List<Client> sortAllClientsByName() {
+        // returned an alphabetically sorted list of all clients
+        Query query = new Query();
+        query.with(Sort.by(Sort.Direction.ASC, "firstName"));
+        List<Client> clients = mongoTemplate.find(query, Client.class);
+        return clients;
+    }
+
     public Optional<Claim> findClaim(int claimId) {
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("claimId").is(claimId));
-//        Claim claim = (Claim) mongoTemplate.find(query, Claim.class);
+        // returns a Claim object such that Claim.claimId = claimId
         Optional<Claim> claim = claimRepository.findClaimByClaimId(claimId);
         return claim;
     }
 
     public Optional<Form> findForm(int formId) {
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("formId").is(formId));
-//        Form form = (Form) mongoTemplate.find(query, Form.class);
+        // returns a Form object such that Form.formId = formId
         Optional<Form> form = formRepository.findFormByFormId(formId);
         return form;
     }
 
-    public boolean loginClientExists(int clientId, String firstName, String lastName) {
+    public boolean loginClientExists(int clientId) {
+        // checks if a Client object with clientId is in the database
+        // returns true if such a client exists, returns false otherwise
         Query query = new Query();
         query.addCriteria(Criteria.where("clientId").is(clientId));
-        query.addCriteria(Criteria.where("firstName").is(firstName));
-        query.addCriteria(Criteria.where("lastName").is(lastName));
         List<Client> lst = mongoTemplate.find(query, Client.class);
 
         if (!lst.isEmpty()) {
