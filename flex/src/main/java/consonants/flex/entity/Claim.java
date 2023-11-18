@@ -19,20 +19,48 @@ public class Claim {
     private ArrayList<Form> forms;
     private int claimId;
     private int clientId;
-    private int status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
+    private claimStatus status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
 
 
-    public Claim(ArrayList<Form> forms, int status, int clientId, int claimId){
-        this.forms = forms;
-        this.claimId = claimId; // randomly generate & will need to check that claimId doesn't already exist when implementing CreateNewClaimUseCase - discuss further
-        this.status = status;
+    public Claim(int clientId, int claimId){
+        this.forms = new ArrayList<Form>();
+        this.claimId = claimId;
+        this.status = claimStatus.INCOMPLETE;
         this.clientId = clientId;
     }
 
-    public String updateStatus(String status){
-        // TODO
-        return null;
+    public int getClaimId() {
+        return this.claimId;
     }
+
+    public enum claimStatus {
+        INCOMPLETE,
+        SUBMITTED,
+        COMPLETE
+    }
+
+    public String claimStatusToString(){
+        return this.status.toString();
+    }
+    public String updateStatus(int newStatus){
+        if (newStatus == 0) {
+            this.status = claimStatus.INCOMPLETE;
+            return claimStatusToString();
+        }
+        else if (newStatus == 1) {
+            this.status = claimStatus.COMPLETE;
+            return claimStatusToString();
+        }
+        else if (newStatus == 2) {
+            this.status = claimStatus.COMPLETE;
+            return claimStatusToString();
+        }
+        else {
+            return "Status choice invalid.";
+        }
+    }
+
+
 
     // getStatus() and getForms() should be automatically added with the Getters and Setters
 }

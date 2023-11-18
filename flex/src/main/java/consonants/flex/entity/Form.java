@@ -16,9 +16,7 @@ public class Form {
 
     @Id
     private ObjectId id;
-    private boolean confirmed;
-    private boolean filledOut;
-    private boolean inProgress;
+    private formStatus status;
     private int formId;
     private int clientId;
     // fields in common across all three forms
@@ -31,10 +29,8 @@ public class Form {
 
 
     public Form(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned) {
-        this.confirmed = false;
-        this.filledOut = false;
-        this.inProgress = true;
-        this.formId = formId; // randomly generate & will need to check that formId doesn't already exist when implementing FormUseCase - discuss further
+        this.status = formStatus.IN_PROGRESS;
+        this.formId = formId; // automatically created and passed to constructor in createForm method in DAO
         this.claimId = claimId;
         this.clientId = clientId;
         this.deceasedName = deceasedName;
@@ -42,6 +38,15 @@ public class Form {
         this.dateSigned = dateSigned;
     }
 
+    public int getFormId() {
+        return this.formId;
+    }
+
+    public enum formStatus {
+        CONFIRMED,
+        FILLED_OUT,
+        IN_PROGRESS
+    }
     // Consider checkConfirmed(), checkFilledOut() and checkInProgress() to be
     // the getters of their corresponding attributes.
 }

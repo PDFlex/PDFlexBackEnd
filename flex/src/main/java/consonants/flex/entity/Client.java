@@ -23,23 +23,25 @@ public class Client {
     private String lastName;
 
     public Client(int clientId, String firstName, String lastName){
-        this.clientId = clientId;
+        this.clientId = clientId; // randomly created in createClaim method in DAO
         this.firstName = firstName;
         this.lastName = lastName;
         this.claimsList = new ArrayList<Claim>();
     }
 
-    // @ Override? (See CA CommonUser.java)
+    public int getClientId(){
+        return this.clientId;
+    }
     public ArrayList<Claim> getClaims(){return claimsList;}
 
-    public Claim getClaim(int claimId){
-        // TODO
-        return null;
-    }
-
-    public void deleteClaim(int claimId){
-        // Reconsider the return type. Return the claim that was deleted? Return a String with "sucesss" or "failure?"
-        // TODO
+    public boolean deleteClaimFromClient(int claimId){
+        for (Claim claim : this.claimsList) {
+            if (claim.getClaimId() == claimId) {
+                this.claimsList.remove(claim);
+                return true;
+            }
+        }
+        return false;
     }
 
 
