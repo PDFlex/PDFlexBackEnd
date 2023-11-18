@@ -51,6 +51,11 @@ public class Form {
     public String formStatusToString(){
         return this.status.toString();
     }
+
+    /**
+     * @param newStatus
+     * @return Returns a string indicating the new status of the form or if the status choice was invalid.
+     */
     public String updateStatus(String newStatus){
         if (newStatus == "IN_PROGRESS") {
             this.status = formStatus.IN_PROGRESS;

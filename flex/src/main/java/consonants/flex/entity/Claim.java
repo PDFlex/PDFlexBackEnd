@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "claims")
 @Data
 @AllArgsConstructor
@@ -16,7 +18,7 @@ public class Claim {
 
     @Id
     private ObjectId id; // mongoDB uses a variable of type ObjectId for the fields
-    private ArrayList<Integer> forms;
+    private List<Integer> forms;
     private int claimId;
     private int clientId;
     private claimStatus status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
@@ -42,13 +44,18 @@ public class Claim {
     public String claimStatusToString(){
         return this.status.toString();
     }
+
+    /**
+     * @param newStatus
+     * @return returns a String indicating the new status or if the choice of status is invalid.
+     */
     public String updateStatus(String newStatus){
         if (newStatus == "INCOMPLETE") {
             this.status = claimStatus.INCOMPLETE;
             return claimStatusToString();
         }
         else if (newStatus == "SUBMITTED") {
-            this.status = claimStatus.COMPLETE;
+            this.status = claimStatus.SUBMITTED;
             return claimStatusToString();
         }
         else if (newStatus == "COMPLETE") {

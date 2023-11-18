@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "clients")
 @Data
@@ -17,7 +18,7 @@ public class Client {
 
     @Id
     private ObjectId id;
-    private ArrayList<Integer> claimsList;
+    private List<Integer> claimsList;
     private int clientId;
     private String firstName;
     private String lastName;
@@ -32,12 +33,17 @@ public class Client {
     public int getClientId(){
         return this.clientId;
     }
-    public ArrayList<Integer> getClaims(){return claimsList;}
+    public List<Integer> getClaims(){return claimsList;}
 
-    public boolean deleteClaimFromClient(int claimId){
-        for (int claim : this.claimsList) {
-            if (claim == claimId) {
-                this.claimsList.remove(claim);
+
+    /**
+     * @param claimId
+     * @return returns true if removal of claim with claimId was successful; false otherwise.
+     */
+    public boolean removeClaimFromClient(int claimId){
+        for (int claimNumber : this.claimsList) {
+            if (claimNumber == claimId) {
+                this.claimsList.remove(claimNumber);
                 return true;
             }
         }
