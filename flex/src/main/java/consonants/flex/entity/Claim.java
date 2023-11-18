@@ -16,14 +16,14 @@ public class Claim {
 
     @Id
     private ObjectId id; // mongoDB uses a variable of type ObjectId for the fields
-    private ArrayList<Form> forms;
+    private ArrayList<Integer> forms;
     private int claimId;
     private int clientId;
     private claimStatus status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
 
 
     public Claim(int clientId, int claimId){
-        this.forms = new ArrayList<Form>();
+        this.forms = new ArrayList<Integer>();
         this.claimId = claimId;
         this.status = claimStatus.INCOMPLETE;
         this.clientId = clientId;
@@ -42,16 +42,16 @@ public class Claim {
     public String claimStatusToString(){
         return this.status.toString();
     }
-    public String updateStatus(int newStatus){
-        if (newStatus == 0) {
+    public String updateStatus(String newStatus){
+        if (newStatus == "INCOMPLETE") {
             this.status = claimStatus.INCOMPLETE;
             return claimStatusToString();
         }
-        else if (newStatus == 1) {
+        else if (newStatus == "SUBMITTED") {
             this.status = claimStatus.COMPLETE;
             return claimStatusToString();
         }
-        else if (newStatus == 2) {
+        else if (newStatus == "COMPLETE") {
             this.status = claimStatus.COMPLETE;
             return claimStatusToString();
         }

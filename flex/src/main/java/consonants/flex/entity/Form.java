@@ -47,6 +47,25 @@ public class Form {
         FILLED_OUT,
         IN_PROGRESS
     }
-    // Consider checkConfirmed(), checkFilledOut() and checkInProgress() to be
-    // the getters of their corresponding attributes.
+
+    public String formStatusToString(){
+        return this.status.toString();
+    }
+    public String updateStatus(String newStatus){
+        if (newStatus == "IN_PROGRESS") {
+            this.status = formStatus.IN_PROGRESS;
+            return formStatusToString();
+        }
+        else if (newStatus == "FILLED_OUT") {
+            this.status = formStatus.FILLED_OUT;
+            return formStatusToString();
+        }
+        else if (newStatus == "CONFIRMED") {
+            this.status = formStatus.CONFIRMED;
+            return formStatusToString();
+        }
+        else {
+            return "Status choice invalid.";
+        }
+    }
 }

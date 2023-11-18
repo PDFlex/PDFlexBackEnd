@@ -17,7 +17,7 @@ public class Client {
 
     @Id
     private ObjectId id;
-    private ArrayList<Claim> claimsList;
+    private ArrayList<Integer> claimsList;
     private int clientId;
     private String firstName;
     private String lastName;
@@ -26,17 +26,17 @@ public class Client {
         this.clientId = clientId; // randomly created in createClaim method in DAO
         this.firstName = firstName;
         this.lastName = lastName;
-        this.claimsList = new ArrayList<Claim>();
+        this.claimsList = new ArrayList<Integer>();
     }
 
     public int getClientId(){
         return this.clientId;
     }
-    public ArrayList<Claim> getClaims(){return claimsList;}
+    public ArrayList<Integer> getClaims(){return claimsList;}
 
     public boolean deleteClaimFromClient(int claimId){
-        for (Claim claim : this.claimsList) {
-            if (claim.getClaimId() == claimId) {
+        for (int claim : this.claimsList) {
+            if (claim == claimId) {
                 this.claimsList.remove(claim);
                 return true;
             }
