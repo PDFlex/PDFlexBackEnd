@@ -1,22 +1,20 @@
 package consonants.flex.data_access.mongo_data_access;
 
-import consonants.flex.entity.Client;
-import consonants.flex.entity.Claim;
-import consonants.flex.entity.Form;
+import consonants.flex.entity.*;
+import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, UploadFormDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -26,7 +24,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     private FormRepository formRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
-
 
     public List<Client> allClients() {return clientRepository.findAll();}
     public List<Claim> allClaims() {return claimRepository.findAll();}
@@ -98,4 +95,41 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
         }
         return false;
     }
+    public Client modifyFirstName(int clientId, String newFirstName) {
+        // Like previous method, this finds a Client using a criteria. This method is pre-set
+        // to the firstName field. Returns a Client Object.
+        // can change return type of modifyFirstName as needed
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set("firstName", newFirstName);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+    }
+
+    @Override
+    public void modifyForm(int formId, Map<String, Object> formFields) {
+
+        for (Map.Entry<String, Object> formField : formFields.entrySet()) {
+            // access form we want to populate by formId
+            Query query = new Query().addCriteria(Criteria.where("formId").is(formId));
+
+            Update updateDefinition = new Update().set(formField.getKey(), formField.getValue());
+            FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+            mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+
+        }
+    }
+
+    @Override
+    public Map<String, Object> OCRLCInfoRequestCall(String base64PDF) throws Exception{ // TODO: look into `throws Exception`
+        SearchablePDF runSearchablePDF = new SearchablePDF(base64PDF);
+        DocumentIntelligence runDocIntelligence = new DocumentIntelligence();
+
+        // OCRSpace creates searchable pdf url so Azure OCR can accept the input and return the form fields mapping
+        String pdfUrl = runSearchablePDF.sendPost();
+        return runDocIntelligence.OCRLCInfoRequest(pdfUrl);
+    }
+
+
+
 }
