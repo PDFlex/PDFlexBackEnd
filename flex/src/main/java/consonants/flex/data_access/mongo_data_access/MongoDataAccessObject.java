@@ -107,27 +107,11 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return form;
     }
 
-    public boolean loginClientExists(int clientId, String firstName, String lastName) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("clientId").is(clientId));
-        query.addCriteria(Criteria.where("firstName").is(firstName));
-        query.addCriteria(Criteria.where("lastName").is(lastName));
-        List<Client> lst = mongoTemplate.find(query, Client.class);
-
-        if (!lst.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
-
     public Boolean clientExistsById(int clientId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("clientId").is(clientId));
         List<Client> lst = mongoTemplate.find(query, Client.class);
-        try{
-            return lst.get(0) != null;
-        }catch(Exception e){
-            return false;
-        }
+        return !lst.isEmpty();
     }
 }
+
