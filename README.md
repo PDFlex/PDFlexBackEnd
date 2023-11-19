@@ -9,14 +9,13 @@ Coded with Java on the Spring Boot framework and uses MongoDB for the database. 
 Created by Team Consonants: Ben, Jiya, Lana, Sarah, Vithu!
 
 ## How to Run Locally
-1. Download project (Green "Code" button > "Download ZIP")
-2. Extract zip & open project in IDE
-3. Navigate to flex > src > main > java > consonants.flex > FlexApplication
-4. Run FlexApplication
+1. Clone this repository onto your preferred IDE.
+2. Set up your .env file. See the first "Note" below.
+3. Set up your connection to our MongoDB. See the second "Note" below.
+4. Navigate to flex > src > main > java > consonants.flex > FlexApplication
+5. Run FlexApplication
    
 The backend will now be hosted on http://localhost:8080/.
-
-TODO: Provide information on how to access different parts of the database from different subdirectories on localhost8080.
 
 ### Notes When Attempting to Run
 - You require specific fields in your .env file, located in flex > src > main > resources
@@ -25,3 +24,4 @@ TODO: Provide information on how to access different parts of the database from 
 - Your IP address must be whitelisted in the MongoDB
   - For Team Consonants members, log into cloud.mongodb.com, then go to Network Access > Add Current IP Address
   - Otherwise, please contact one of us directly with your IP address so we can whitelist you!
+- Our application is running on Java Corretto 17.

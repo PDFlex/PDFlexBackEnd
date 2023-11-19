@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ViewAllClaimsDataAccessInterface {
 
-    Claim createClaim(ArrayList<Form> forms, int status, int clientId, int claimId);
+    Claim createClaim(int clientId);
 
     List<Claim> allClaims();
 }
