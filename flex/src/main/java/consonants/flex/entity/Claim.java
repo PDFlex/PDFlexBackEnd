@@ -2,13 +2,14 @@ package consonants.flex.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "claims")
 @Data
 @AllArgsConstructor
@@ -17,29 +18,56 @@ public class Claim {
 
     @Id
     private ObjectId id; // mongoDB uses a variable of type ObjectId for the fields
-    private ArrayList<Form> forms;
-    @Getter private int claimId;
+    private List<Integer> forms;
+    private int claimId;
     private int clientId;
-    @Getter private int status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
+    private claimStatus status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
 
 
     public Claim(int clientId, int claimId){
-        this.forms = new ArrayList<Form>();
-        this.claimId = claimId; // randomly generate & will need to check that claimId doesn't already exist when implementing CreateNewClaimUseCase - discuss further
-        this.status = 0;
+        this.forms = new ArrayList<Integer>();
+        this.claimId = claimId;
+        this.status = claimStatus.INCOMPLETE;
         this.clientId = clientId;
     }
 
-    public enum ClaimStatus {
-        SUBMITTED,
-        COMPLETE,
-        INCOMPLETE;
+    public int getClaimId() {
+        return this.claimId;
     }
 
-    public String updateStatus(String status){
-        // TODO
-        return null;
+    public enum claimStatus {
+        INCOMPLETE,
+        SUBMITTED,
+        COMPLETE
     }
+
+    public String claimStatusToString(){
+        return this.status.toString();
+    }
+
+    /**
+     * @param newStatus
+     * @return returns a String indicating the new status or if the choice of status is invalid.
+     */
+    public String updateStatus(String newStatus){
+        if (newStatus == "INCOMPLETE") {
+            this.status = claimStatus.INCOMPLETE;
+            return claimStatusToString();
+        }
+        else if (newStatus == "SUBMITTED") {
+            this.status = claimStatus.SUBMITTED;
+            return claimStatusToString();
+        }
+        else if (newStatus == "COMPLETE") {
+            this.status = claimStatus.COMPLETE;
+            return claimStatusToString();
+        }
+        else {
+            return "Status choice invalid.";
+        }
+    }
+
+
 
     // getStatus() and getForms() should be automatically added with the Getters and Setters
 }

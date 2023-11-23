@@ -16,9 +16,7 @@ public class Form {
 
     @Id
     private ObjectId id;
-    private boolean confirmed;
-    private boolean filledOut;
-    private boolean inProgress;
+    private formStatus status;
     private int formId;
     private int clientId;
     // fields in common across all three forms
@@ -31,10 +29,8 @@ public class Form {
 
 
     public Form(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned) {
-        this.confirmed = false;
-        this.filledOut = false;
-        this.inProgress = true;
-        this.formId = formId; // randomly generate & will need to check that formId doesn't already exist when implementing FormUseCase - discuss further
+        this.status = formStatus.IN_PROGRESS;
+        this.formId = formId; // automatically created and passed to constructor in createForm method in DAO
         this.claimId = claimId;
         this.clientId = clientId;
         this.deceasedName = deceasedName;
@@ -42,6 +38,39 @@ public class Form {
         this.dateSigned = dateSigned;
     }
 
-    // Consider checkConfirmed(), checkFilledOut() and checkInProgress() to be
-    // the getters of their corresponding attributes.
+    public int getFormId() {
+        return this.formId;
+    }
+
+    public enum formStatus {
+        CONFIRMED,
+        FILLED_OUT,
+        IN_PROGRESS
+    }
+
+    public String formStatusToString(){
+        return this.status.toString();
+    }
+
+    /**
+     * @param newStatus
+     * @return Returns a string indicating the new status of the form or if the status choice was invalid.
+     */
+    public String updateStatus(String newStatus){
+        if (newStatus == "IN_PROGRESS") {
+            this.status = formStatus.IN_PROGRESS;
+            return formStatusToString();
+        }
+        else if (newStatus == "FILLED_OUT") {
+            this.status = formStatus.FILLED_OUT;
+            return formStatusToString();
+        }
+        else if (newStatus == "CONFIRMED") {
+            this.status = formStatus.CONFIRMED;
+            return formStatusToString();
+        }
+        else {
+            return "Status choice invalid.";
+        }
+    }
 }
