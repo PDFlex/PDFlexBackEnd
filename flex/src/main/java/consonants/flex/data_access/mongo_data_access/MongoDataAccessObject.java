@@ -2,6 +2,7 @@ package consonants.flex.data_access.mongo_data_access;
 
 import consonants.flex.entity.*;
 import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
+import consonants.flex.use_case.upload_form.UploadFormInputData;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -106,22 +107,24 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
     }
 
-    @Override
-    public void modifyForm(int formId, Map<String, Object> formFields) {
+
+
+    public void modifyForm(int claimId, Map<String, Object> formFields) {
 
         for (Map.Entry<String, Object> formField : formFields.entrySet()) {
             // access form we want to populate by formId
-            Query query = new Query().addCriteria(Criteria.where("formId").is(formId));
+            Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
 
             Update updateDefinition = new Update().set(formField.getKey(), formField.getValue());
             FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
-            mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+
+            mongoTemplate.findAndModify(query, updateDefinition, options, Form.class, "forms");
 
         }
     }
 
-    @Override
     public Map<String, Object> OCRLCInfoRequestCall(String base64PDF) throws Exception{ // TODO: look into `throws Exception`
+
         SearchablePDF runSearchablePDF = new SearchablePDF(base64PDF);
         DocumentIntelligence runDocIntelligence = new DocumentIntelligence();
 

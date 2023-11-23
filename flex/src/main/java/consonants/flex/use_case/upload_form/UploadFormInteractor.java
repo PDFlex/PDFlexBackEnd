@@ -25,12 +25,12 @@ public class UploadFormInteractor implements UploadFormInputBoundary{
     }
 
     @Override
-    public void execute(String base64PDF) throws Exception{
-        // TODO: figure out how to go claimId -> formId, for now we'll hard code it
+    public void execute(UploadFormInputData uploadInputData) throws Exception{
+        // TODO: figure out how to go claimId -> formId, for now we'll hard code the formID
         // TODO: should create a method in the DAO that retrieves the BSON pdf -> base64 pdf (we'll need to change the input name)
 
-        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall(base64PDF);
+        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall(uploadInputData.getBase64());
 
-        uploadDataAccessObject.modifyForm(44, formFields);
+        uploadDataAccessObject.modifyForm(1001, formFields);
     }
 }

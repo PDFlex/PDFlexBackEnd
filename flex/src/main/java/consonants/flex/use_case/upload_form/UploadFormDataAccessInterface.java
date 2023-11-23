@@ -14,7 +14,7 @@ public interface UploadFormDataAccessInterface{
     Map<String, Object> OCRLCInfoRequestCall(String pdfUrl) throws Exception;
 
     // find an existing form object, so we can populate it with the OCR result
-    void modifyForm(int formId, Map<String, Object> formFields);
+    void modifyForm(int claimId, Map<String, Object> formFields);
 
 
 }

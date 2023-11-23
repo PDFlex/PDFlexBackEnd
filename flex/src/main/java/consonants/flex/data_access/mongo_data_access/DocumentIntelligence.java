@@ -12,8 +12,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Base64;
 
 public class DocumentIntelligence {
+
     public Map<String, Object> OCRLCInfoRequest(String pdfURL) {
 
         String endpoint = "https://pdflex.cognitiveservices.azure.com/";
@@ -25,7 +34,6 @@ public class DocumentIntelligence {
                 .endpoint(endpoint)
                 .buildClient();
 
-        // sample document (pdf url is hard-coded for testing purposes)
         String documentUrl = pdfURL;
         String modelId = "prebuilt-document";
         SyncPoller<OperationResult, AnalyzeResult> analyzeDocumentPoller =
@@ -51,15 +59,15 @@ public class DocumentIntelligence {
         for (DocumentKeyValuePair keyValuePair : keyValuePairs){
             if (keyValuePair.getValue() != null){
 
-                // claimNumber TO DO: remove after as CNC already instantiates the claim number
-                if (keyValuePair.getKey().getContent().equals("CLAIM NUMBER")) {
-                    // convert the corresponding str value of the key to an int
-                    String formFieldValue = keyValuePair.getValue().getContent();
-                    // add to form fields mapping
-                    formFields.put("claimNumber", formFieldValue);
-                }
+                // claimNumber TODO: remove after as CNC already instantiates the claim number
+//                if (keyValuePair.getKey().getContent().equals("CLAIM NUMBER")) {
+//                    // convert the corresponding str value of the key to an int
+//                    String formFieldValue = keyValuePair.getValue().getContent();
+//                    // add to form fields mapping
+//                    formFields.put("claimNumber", formFieldValue);
+//                }
                 // claims checklist
-                else if (keyValuePair.getKey().getContent().equals("Has the Certification of Death form been completed by the attending physician, coroner, or family doctor?")) {
+                if (keyValuePair.getKey().getContent().equals("Has the Certification of Death form been completed by the attending physician, coroner, or family doctor?")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     if (formFieldValue.equals(":selected:")) {
                         formFields.put("completedDeathCertificate", true);
