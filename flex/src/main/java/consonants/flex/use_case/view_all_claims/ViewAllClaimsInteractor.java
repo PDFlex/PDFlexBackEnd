@@ -24,7 +24,7 @@ public class ViewAllClaimsInteractor implements ViewAllClaimsInputBoundary{
 
     @Override
     public ResponseEntity<List<Claim>> execute() {
-        List<Claim> claimsList = (claimsDataAccessObject.allClaims());
+        List<Claim> claimsList = (claimsDataAccessObject.getAllClaims());
         ViewAllClaimsOutputData outputData = new ViewAllClaimsOutputData(claimsList);
         return new ResponseEntity<List<Claim>>(viewAllClaimsPresenter.viewAllClaims(outputData), HttpStatus.OK);
     }
