@@ -18,6 +18,6 @@ public class SingleClientController {
 
     @GetMapping("/{clientId}")
     public ResponseEntity<Optional<Client>> getSingleClient(@PathVariable int clientId) {
-        return new ResponseEntity<Optional<Client>>(clientRepository.findClient(clientId), HttpStatus.OK);
+        return new ResponseEntity<Optional<Client>>(clientRepository.getClientById(clientId), HttpStatus.OK);
     }
 }
