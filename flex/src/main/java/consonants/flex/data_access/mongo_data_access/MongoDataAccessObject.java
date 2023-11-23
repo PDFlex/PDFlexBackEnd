@@ -85,6 +85,34 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     }
 
     /**
+     * Can use this template to create methods to modify a specific field in client object
+     * for example, field = "firstName", will update the firstName attribute of the Client
+     * findAndModify returns a Client Object; can change the return to void, boolean, etc, as needed.
+     * @return The Client with modified fields.
+     */
+    public Client modifyClient(int clientId, String field, Object newEntry) {
+
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set(field, newEntry);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, Client.class);
+    }
+
+    /**
+     * Like previous method, this finds a Client using a criteria. This method is pre-set
+     * to the firstName field. Returns a Client Object. Can change return type if needed.
+     * @return The Client with modified fields.
+     */
+    public Client modifyClientFirstName(int clientId, String newFirstName) {
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set("firstName", newFirstName);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+    }
+
+    /**
      * @return A List of all the Clients in the MongoDB.
      */
     public List<Client> getAllClients() {return clientRepository.findAll();}
@@ -109,9 +137,9 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
     }
 
     /**
-     *
+     * Retrieves the Claim from the MongoDB with the corresponding unique claimId.
      * @param claimId The claimId of the Claim.
-     * @return
+     * @return The Claim with the claimId; null if it doesn't exist.
      */
     public Optional<Claim> getClaimById(int claimId) {
         return claimRepository.findClaimByClaimId(claimId);
@@ -128,7 +156,12 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
         return formRepository.findFormByFormId(formId);
     }
 
-    public List<Client> findClientsStartingWith(String letter) {
+    /**
+     * Returns a List of all the Clients in the MongoDB whose first name starts with a certain letter.
+     * @param letter The first letter of the Client's first name.
+     * @return The List of Clients.
+     */
+    public List<Client> getClientsByFirstNameFirstLetter(String letter) {
         // can use this template to find clients by the first letter of their first names
         Query query = new Query();
         query.addCriteria(Criteria.where("firstName").regex(letter));
@@ -136,39 +169,15 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
         return clients;
     }
 
-    public Client modifyClient(int clientId, String field, Object newEntry) {
-        // can use this template to create methods to modify a specific field in client object
-        // for example, field = "firstName", will update the firstName attribute of the Client
-        // findAndModify returns a Client Object; can change updateClient to return void, boolean, etc, as needed
-        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
-        Update updateDefinition = new Update().set(field, newEntry);
-        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
-
-        return mongoTemplate.findAndModify(query, updateDefinition, Client.class);
-    }
-
-    public Client modifyFirstName(int clientId, String newFirstName) {
-        // Like previous method, this finds a Client using a criteria. This method is pre-set
-        // to the firstName field. Returns a Client Object.
-        // can change return type of modifyFirstName as needed
-        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
-        Update updateDefinition = new Update().set("firstName", newFirstName);
-        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
-
-        return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
-    }
-
     /**
-     *  TODO sortAllClientsByName -> getAllClientsAlphabetically
-     * @return An alphabetically sorted list of all clients
+     * @return An alphabetically sorted (by first name) List of all Clients.
      */
-    public List<Client> sortAllClientsByName() {
+    public List<Client> getClientsByFirstNameAlphabetically() {
         Query query = new Query();
         query.with(Sort.by(Sort.Direction.ASC, "firstName"));
         List<Client> clients = mongoTemplate.find(query, Client.class);
         return clients;
     }
-
 
     public boolean loginClientExists(int clientId, String firstName, String lastName) {
         Query query = new Query();
