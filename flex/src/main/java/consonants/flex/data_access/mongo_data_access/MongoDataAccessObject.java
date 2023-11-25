@@ -1,9 +1,13 @@
 package consonants.flex.data_access.mongo_data_access;
 
+
+import com.mongodb.client.model.Filters;
 import consonants.flex.entity.*;
 import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
-import consonants.flex.use_case.upload_form.UploadFormInputData;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import org.bson.conversions.Bson;
+import org.bson.types.Binary;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.*;
 
 @Service
@@ -24,11 +29,15 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     @Autowired
     private FormRepository formRepository;
     @Autowired
+    private DocumentRepository documentRepository;
+    @Autowired
     private MongoTemplate mongoTemplate;
+
 
     public List<Client> allClients() {return clientRepository.findAll();}
     public List<Claim> allClaims() {return claimRepository.findAll();}
     public List<Form> allForms() {return formRepository.findAll();}
+    public List<FileDocument> allDocuments() {return documentRepository.findAll();}
 
 
     public Client createClient(int clientId, String firstName, String lastName) {
@@ -123,7 +132,26 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
     }
 
-    public Map<String, Object> OCRLCInfoRequestCall(String base64PDF) throws Exception{ // TODO: look into `throws Exception`
+    // extracts base64 string from the documents collection for the relevant claim
+    @Override
+    public Binary extractPDFBase64(int claimId) {
+        // retrieve document object, so we can get the value from the "content" key
+
+        Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+        System.out.println("TESTTT");
+        List<FileDocument> docs = mongoTemplate.find(query, FileDocument.class, "documents");
+//        for(FileDocument doc : docs){
+//            System.out.println(doc.getContent().toString());
+//        }
+        String binaryStr = docs.get(0).getContent().toString(); //TODO: check if this violates CA
+        System.out.println(binaryStr);
+        return docs.get(0).getContent();
+
+    }
+
+    public Map<String, Object> OCRLCInfoRequestCall(Binary base64PDF) throws Exception{ // TODO: look into `throws Exception`
 
         SearchablePDF runSearchablePDF = new SearchablePDF(base64PDF);
         DocumentIntelligence runDocIntelligence = new DocumentIntelligence();
@@ -132,7 +160,4 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         String pdfUrl = runSearchablePDF.sendPost();
         return runDocIntelligence.OCRLCInfoRequest(pdfUrl);
     }
-
-
-
 }

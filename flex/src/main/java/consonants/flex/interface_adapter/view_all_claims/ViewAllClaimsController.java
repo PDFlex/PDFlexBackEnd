@@ -20,6 +20,7 @@ public class ViewAllClaimsController {
 
     @GetMapping
     public ResponseEntity<List<Claim>> getAllClaims() {
+
         return viewAllClaimsInteractor.execute();
         }
 

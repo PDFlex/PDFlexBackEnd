@@ -1,4 +1,4 @@
-package consonants.flex.data_access;
+package consonants.flex.data_access.mongo_data_access;
 
 import org.bson.types.Binary;
 import org.springframework.web.multipart.MultipartFile;
@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
-public class NetworkDataAccess extends consonants.flex.data_access.FileDataAccess {
+public class NetworkDataAccess extends consonants.flex.data_access.mongo_data_access.FileDataAccess {
 
     MultipartFile file;
 

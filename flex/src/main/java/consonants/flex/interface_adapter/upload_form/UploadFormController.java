@@ -22,10 +22,11 @@ public class UploadFormController {
         this.uploadInteractor = uploadInteractor;
     }
     @PostMapping("/form")
-    public void uploadForm(@RequestBody String base64PDF) throws Exception{
+    public void uploadForm() throws Exception{
 
-        System.out.println(base64PDF);
-        UploadFormInputData uploadInputData = new UploadFormInputData(base64PDF);
+//        System.out.println(base64PDF);
+//        UploadFormInputData uploadInputData = new UploadFormInputData(base64PDF);
+        UploadFormInputData uploadInputData = new UploadFormInputData();
         uploadInteractor.execute(uploadInputData);
     }
 }

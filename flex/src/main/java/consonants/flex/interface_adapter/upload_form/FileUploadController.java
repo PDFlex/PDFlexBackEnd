@@ -1,8 +1,8 @@
 package consonants.flex.interface_adapter.upload_form;
 
 import consonants.flex.data_access.mongo_data_access.DocumentRepository;
-import consonants.flex.data_access.FileDataAccess;
-import consonants.flex.data_access.NetworkDataAccess;
+import consonants.flex.data_access.mongo_data_access.FileDataAccess;
+import consonants.flex.data_access.mongo_data_access.NetworkDataAccess;
 import consonants.flex.entity.FileDocument;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;

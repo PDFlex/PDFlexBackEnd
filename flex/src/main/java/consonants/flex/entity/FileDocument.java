@@ -14,6 +14,7 @@ public class FileDocument {
     private int claimId;
 
     public String name;
+
     private final Binary content;
     public LocalDate timeStamp;
 
@@ -26,4 +27,7 @@ public class FileDocument {
 
     public void setId(String id) { this.id = id; }
 
+    public Binary getContent() {
+        return content;
+    }
 }
