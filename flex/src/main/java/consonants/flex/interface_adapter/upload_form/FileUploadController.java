@@ -1,8 +1,8 @@
 package consonants.flex.interface_adapter.upload_form;
 
 import consonants.flex.data_access.mongo_data_access.DocumentRepository;
-import consonants.flex.data_access.FileDataAccess;
-import consonants.flex.data_access.NetworkDataAccess;
+import consonants.flex.data_access.mongo_data_access.FileDataAccess;
+import consonants.flex.data_access.mongo_data_access.NetworkDataAccess;
 import consonants.flex.entity.FileDocument;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/pdf")
+@RequestMapping("/pdf/initial")
 
 public class FileUploadController {
     @Autowired
@@ -33,6 +33,7 @@ public class FileUploadController {
     @PostMapping()
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileName") String name, @RequestParam("claimId") int claimId){
         FileDataAccess dataAccessObject = new NetworkDataAccess(file);
+
         FileDocument result;
         Binary data;
         try {
