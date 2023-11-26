@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -23,6 +24,8 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     private ClaimRepository claimRepository;
     @Autowired
     private FormRepository formRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -121,6 +124,13 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
     }
 
+    // saves pdf to MongoDB in the documents collection
+    public void saveDocument(String fileName, int claimId, Binary data, LocalDate date){
+        FileDocument fileDocument = new FileDocument(fileName, claimId, data, date);
+        documentRepository.save(fileDocument);
+
+    }
+
     // extracts base64 string from the documents collection for the relevant claim
     @Override
     public String ExtractPDFBase64(int claimId) {
@@ -136,9 +146,9 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return base64Str;
     }
 
-    public Map<String, Object> OCRLCInfoRequestCall() throws Exception{ // TODO: look into `throws Exception`
+    public Map<String, Object> OCRLCInfoRequestCall(int claimId) throws Exception{ // TODO: look into `throws Exception`
         // gets base64 pdf string
-        String base64 = ExtractPDFBase64(24); // TODO: when we have client/claim persistence on the frontend, access the information from there instead of hardcoding the claimId
+        String base64 = ExtractPDFBase64(claimId); // TODO: when we have client/claim persistence on the frontend, access the information from there instead of hardcoding the claimId
 
         // instantiate a SearchablePDF object to get the searchable PDF URL from OCRSpace
         SearchablePDF runSearchablePDF = new SearchablePDF(base64);
@@ -149,7 +159,5 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         String pdfUrl = runSearchablePDF.sendPost();
         return runDocIntelligence.OCRLCInfoRequest(pdfUrl);
     }
-
-
 
 }

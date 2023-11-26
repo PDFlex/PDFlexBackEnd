@@ -30,12 +30,10 @@ import java.util.function.Function;
 
 public class UploadFormInteractor implements UploadFormInputBoundary{
 
-
     @Autowired
     final UploadFormDataAccessInterface uploadDataAccessObject;
     @Autowired
     private DocumentRepository documentRepository;
-//    final UploadFormOutputBoundary uploadPresenter;
 
     public UploadFormInteractor(UploadFormDataAccessInterface uploadDataAccessObject) {
         this.uploadDataAccessObject = uploadDataAccessObject;
@@ -43,8 +41,13 @@ public class UploadFormInteractor implements UploadFormInputBoundary{
 
     @Override
     public void execute(UploadFormInputData uploadInputData) throws Exception{
-        // TODO: figure out how to get claimId from the frontend, for now we'll hard code the claimId
-        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall();
-        uploadDataAccessObject.modifyForm(24, formFields);
+        FileDataAccess dataAccessObject = new NetworkDataAccess(uploadInputData.getFile());
+        Binary data;
+
+        data = dataAccessObject.serializePDF();
+        uploadDataAccessObject.saveDocument(uploadInputData.getName(), uploadInputData.getClaimId(), data, LocalDate.now()); // TODO: check if accessing the claimId like this violates CA
+
+        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall(uploadInputData.getClaimId()); // TODO: check if accessing the claimId like this violates CA
+        uploadDataAccessObject.modifyForm(uploadInputData.getClaimId(), formFields);
     }
 }
