@@ -5,6 +5,7 @@ import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -179,16 +180,11 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
         return clients;
     }
 
-    public boolean loginClientExists(int clientId, String firstName, String lastName) {
+    public Boolean clientExistsById(int clientId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("clientId").is(clientId));
-        query.addCriteria(Criteria.where("firstName").is(firstName));
-        query.addCriteria(Criteria.where("lastName").is(lastName));
         List<Client> lst = mongoTemplate.find(query, Client.class);
-
-        if (!lst.isEmpty()) {
-            return true;
-        }
-        return false;
+        return !lst.isEmpty();
     }
 }
+

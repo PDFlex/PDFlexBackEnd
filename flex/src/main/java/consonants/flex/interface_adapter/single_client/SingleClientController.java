@@ -1,3 +1,7 @@
+/**
+ * Unused Controller
+ */
+
 package consonants.flex.interface_adapter.single_client;
 
 import consonants.flex.data_access.mongo_data_access.MongoDataAccessObject;
@@ -11,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins ="*")
-@RequestMapping("/clients")
+@RequestMapping("/test")
 public class SingleClientController {
     @Autowired
     private MongoDataAccessObject clientRepository;
