@@ -3,8 +3,11 @@ import consonants.flex.entity.FileDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 //@Repository
 public interface DocumentRepository extends MongoRepository<FileDocument, String>{
     // implement custom query
-//     FileDocument save(FileDocument fileDocument);
+    Optional<FileDocument> findFileDocumentByClaimId(int claimId);
+    // findByStatusIncludeItemAndStatusFields
 }

@@ -12,14 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Base64;
 
 public class DocumentIntelligence {
 
@@ -48,182 +40,149 @@ public class DocumentIntelligence {
         Map<String, Object> formFields = new HashMap<>();
 
         // for values in key-value pairs that are arrays
-        ArrayList<String> pastPhysicianNames = new ArrayList<String>();
-        ArrayList<String> pastPhysicianAddresses = new ArrayList<String>();
+        ArrayList<String> pastPhysicianNames = new ArrayList<>();
+        ArrayList<String> pastPhysicianAddresses = new ArrayList<>();
 
         // counters to keep track of duplicate keys
         int telephoneCounter = 0;
         int addressCounter = 0;
-        int fullAddress = 0;
+        int fullAddressCounter = 0;
 
-        for (DocumentKeyValuePair keyValuePair : keyValuePairs){
-            if (keyValuePair.getValue() != null){
-
-                // claimNumber TODO: remove after as CNC already instantiates the claim number
-//                if (keyValuePair.getKey().getContent().equals("CLAIM NUMBER")) {
-//                    // convert the corresponding str value of the key to an int
-//                    String formFieldValue = keyValuePair.getValue().getContent();
-//                    // add to form fields mapping
-//                    formFields.put("claimNumber", formFieldValue);
-//                }
+        for (DocumentKeyValuePair keyValuePair : keyValuePairs) {
+            if (keyValuePair.getValue() != null) {
                 // claims checklist
                 if (keyValuePair.getKey().getContent().equals("Has the Certification of Death form been completed by the attending physician, coroner, or family doctor?")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     if (formFieldValue.equals(":selected:")) {
                         formFields.put("completedDeathCertificate", true);
                     }
-                }
-                else if (keyValuePair.getKey().getContent().equals("Attach an original or a copy of the death certificate.")){
+                } else if (keyValuePair.getKey().getContent().equals("Attach an original or a copy of the death certificate.")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
-                    if (formFieldValue.equals(":selected:")){
+                    if (formFieldValue.equals(":selected:")) {
                         formFields.put("attachedDeathCertificate", true);
                     }
-                }
-                else if (keyValuePair.getKey().getContent().equals("Has the lender either completed the claim submission online or completed the Statement of Lending Institution form?")){
+                } else if (keyValuePair.getKey().getContent().equals("Has the lender either completed the claim submission online or completed the Statement of Lending Institution form?")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
-                    if (formFieldValue.equals(":selected:")){
+                    if (formFieldValue.equals(":selected:")) {
                         formFields.put("completedClaimSubmission", true);
                     }
                 }
-                // deceasedName
-                else if (keyValuePair.getKey().getContent().equals("Name of deceased (first, middle, last)")){
+                else if (keyValuePair.getKey().getContent().equals("Name of deceased (first, middle, last)")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("deceasedName", formFieldValue);
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("Date of birth (mo/day/yr)")){
+                } else if (keyValuePair.getKey().getContent().equals("Date of birth (mo/day/yr)")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("dateOfBirth", formFieldValue);
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("Date of death (mo/day/yr)")){
+                } else if (keyValuePair.getKey().getContent().equals("Date of death (mo/day/yr)")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("dateOfDeath", formFieldValue);
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("Cause of death")){
+                } else if (keyValuePair.getKey().getContent().equals("Cause of death")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("causeOfDeath", formFieldValue);
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("If yes, date admitted:")){
+                } else if (keyValuePair.getKey().getContent().equals("If yes, date admitted:")) {
                     formFields.put("deceasedHospitalized", true);
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("Name of hospital")){
+                } else if (keyValuePair.getKey().getContent().equals("Name of hospital")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("hospitalName", formFieldValue);
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddress == 0){
+                } else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddressCounter == 0) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("hospitalAddress", formFieldValue);
-                    fullAddress ++;
+                    fullAddressCounter++;
 
-                }
-                else if (keyValuePair.getKey().getContent().equals("Name of attending physician at time of death")){
+                } else if (keyValuePair.getKey().getContent().equals("Name of attending physician at time of death")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("attendingPhysicianName", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddress == 1){
+                } else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddressCounter == 1) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("attendingPhysicianAddress", formFieldValue);
-                    fullAddress ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 0){
+                    fullAddressCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 0) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("attendingPhysicianContactNumber", formFieldValue);
-                    telephoneCounter ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Name of family physician")){
+                    telephoneCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Name of family physician")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("familyPhysicianName", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddress == 2){
+                } else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddressCounter == 2) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("familyPhysicianAddress", formFieldValue);
-                    fullAddress ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 1){
+                    fullAddressCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 1) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("familyPhysicianContactNumber", formFieldValue);
-                    telephoneCounter ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Physician name")){
+                    telephoneCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Physician name")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     pastPhysicianNames.add(formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Address") && addressCounter == 0){
-                    String formFieldValue = keyValuePair.getValue().getContent();
-                    formFields.put("kinAddress", formFieldValue);
-                    addressCounter ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Address")){
+                } else if (keyValuePair.getKey().getContent().equals("Address") && addressCounter != 3) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     pastPhysicianAddresses.add(formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Occupation")){
+                    addressCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Address")){
+                    String formFieldValue = keyValuePair.getValue().getContent();
+                    formFields.put("kinAddress", formFieldValue);
+                } else if (keyValuePair.getKey().getContent().equals("Occupation")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("occupation", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Date last worked (mo/day/yr)")){
+                } else if (keyValuePair.getKey().getContent().equals("Date last worked (mo/day/yr)")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("dateLastWorked", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Employer")){
+                } else if (keyValuePair.getKey().getContent().equals("Employer")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("employer", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddress == 3){
+                } else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)") && fullAddressCounter == 3) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("workAddress", formFieldValue);
-                    fullAddress ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 2){
+                    fullAddressCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 2) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("employerContactNumber", formFieldValue);
-                    telephoneCounter ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Name of next-of-kin")){
+                    telephoneCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Name of next-of-kin")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("nameOfKin", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Relationship to insured")){
+                } else if (keyValuePair.getKey().getContent().equals("Relationship to insured")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("relationshipToInsured", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 3){
+                } else if (keyValuePair.getKey().getContent().equals("Telephone number") && telephoneCounter == 3) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("kinContactNumber", formFieldValue);
-                    telephoneCounter ++;
-                }
-                else if (keyValuePair.getKey().getContent().equals("Signature of next-of-kin")){
+                    telephoneCounter++;
+                } else if (keyValuePair.getKey().getContent().equals("Signature of next-of-kin")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("kinSignature", formFieldValue);
-                }
-                else if (keyValuePair.getKey().getContent().equals("Date signed (mo/day/yr)")){
+                } else if (keyValuePair.getKey().getContent().equals("Date signed (mo/day/yr)")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("dateSigned", formFieldValue);
                 }
 
-
-                if (keyValuePair.getKey().getContent().equals("Normal retirement") && keyValuePair.getValue().getContent().equals(":selected:")){
+                if (keyValuePair.getKey().getContent().equals("Normal retirement") && keyValuePair.getValue().getContent().equals(":selected:")) {
                     formFields.put("reasonInsuredStoppedWorking", "Normal retirement");
-                }
-                else if (keyValuePair.getKey().getContent().equals("Disability retirement") && keyValuePair.getValue().getContent().equals(":selected:")){
+                } else if (keyValuePair.getKey().getContent().equals("Disability retirement") && keyValuePair.getValue().getContent().equals(":selected:")) {
                     formFields.put("reasonInsuredStoppedWorking", "Disability retirement");
-                }
-                else if (keyValuePair.getKey().getContent().equals("Illness") && keyValuePair.getValue().getContent().equals(":selected:")){
+                } else if (keyValuePair.getKey().getContent().equals("Illness") && keyValuePair.getValue().getContent().equals(":selected:")) {
                     formFields.put("reasonInsuredStoppedWorking", "Illness");
-                }
-                else if (keyValuePair.getKey().getContent().equals("Death") && keyValuePair.getValue().getContent().equals(":selected:")){
+                } else if (keyValuePair.getKey().getContent().equals("Death") && keyValuePair.getValue().getContent().equals(":selected:")) {
                     formFields.put("reasonInsuredStoppedWorking", "Death");
-                }
-                else if (keyValuePair.getKey().getContent().equals("Other (please specify)") && keyValuePair.getValue().getContent().equals(":selected:")){
+                } else if (keyValuePair.getKey().getContent().equals("Other (please specify)") && keyValuePair.getValue().getContent().equals(":selected:")) {
                     String formFieldValue = (keyValuePair.getKey().getContent()).replaceAll("Other (please specify):", "");
                     formFields.put("reasonInsuredStoppedWorking", formFieldValue);
                 }
-
+            } else if (keyValuePair.getValue() == null){
+                if (keyValuePair.getKey().getContent().equals("Address")){
+                    addressCounter ++;
+                } else if (keyValuePair.getKey().getContent().equals("Telephone number")){
+                    telephoneCounter ++;
+                }
+                else if (keyValuePair.getKey().getContent().equals("Address (street, city, province, postal code)")){
+                    fullAddressCounter++;
+                }
             }
 
             formFields.put("pastPhysicianNames", pastPhysicianNames);
@@ -233,8 +192,9 @@ public class DocumentIntelligence {
 
 //        for (Map.Entry<String, Object> entry : formFields.entrySet()) {
 //            System.out.println(entry.getKey() + ": " + entry.getValue());
+//    }
+
         return formFields;
         }
-
     }
 

@@ -43,19 +43,8 @@ public class UploadFormInteractor implements UploadFormInputBoundary{
 
     @Override
     public void execute(UploadFormInputData uploadInputData) throws Exception{
-        // TODO: figure out how to go claimId -> formId, for now we'll hard code the formID
-        // TODO: should create a method in the DAO that retrieves the BSON pdf -> base64 pdf (we'll need to change the input name)
-        FileDataAccess dataAccessObject = new NetworkDataAccess(uploadInputData.getFile());
-        FileDocument result;
-        Binary data;
-
-        data = dataAccessObject.serializePDF();
-        result = documentRepository.save(new FileDocument(uploadInputData.getName(), uploadInputData.getClaimId(), data, LocalDate.now()));
-
-        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall("data:application/pdf;" + Arrays.toString(uploadInputData.getFile().getBytes()));
-        System.out.println(formFields);
-        uploadDataAccessObject.modifyForm(1001, formFields);
-
-        // NEED TO RETURN FORM FIELDS HERE
+        // TODO: figure out how to get claimId from the frontend, for now we'll hard code the claimId
+        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall();
+        uploadDataAccessObject.modifyForm(24, formFields);
     }
 }

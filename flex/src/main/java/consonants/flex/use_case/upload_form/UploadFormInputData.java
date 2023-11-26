@@ -17,9 +17,4 @@ public class UploadFormInputData {
         this.claimId = claimId;
     }
 
-
-//    String getBase64() {
-//        return base64;
-//    }
-
 }

@@ -2,8 +2,8 @@ package consonants.flex.data_access.mongo_data_access;
 
 import consonants.flex.entity.*;
 import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
-import consonants.flex.use_case.upload_form.UploadFormInputData;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -107,8 +107,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
     }
 
-
-
     public void modifyForm(int claimId, Map<String, Object> formFields) {
 
         for (Map.Entry<String, Object> formField : formFields.entrySet()) {
@@ -123,12 +121,31 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
     }
 
-    public Map<String, Object> OCRLCInfoRequestCall(String base64PDF) throws Exception{ // TODO: look into `throws Exception`
+    // extracts base64 string from the documents collection for the relevant claim
+    @Override
+    public String ExtractPDFBase64(int claimId) {
+        // retrieve document object, so we can get the value from the "content" key
 
-        SearchablePDF runSearchablePDF = new SearchablePDF(base64PDF);
+        Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+
+        List<FileDocument> docs = mongoTemplate.find(query, FileDocument.class, "documents");
+
+        Binary binaryStr = docs.get(0).getContent(); // TODO: check if the getContent violates CA
+        String base64Str = Base64.getEncoder().encodeToString(binaryStr.getData());
+
+        return base64Str;
+    }
+
+    public Map<String, Object> OCRLCInfoRequestCall() throws Exception{ // TODO: look into `throws Exception`
+        // gets base64 pdf string
+        String base64 = ExtractPDFBase64(24); // TODO: when we have client/claim persistence on the frontend, access the information from there instead of hardcoding the claimId
+
+        // instantiate a SearchablePDF object to get the searchable PDF URL from OCRSpace
+        SearchablePDF runSearchablePDF = new SearchablePDF(base64);
+        // instantiate a DocumentIntelligence object to pass the searchable PDF URL into Azure's Document Intelligence OCR
         DocumentIntelligence runDocIntelligence = new DocumentIntelligence();
 
-        // OCRSpace creates searchable pdf url so Azure OCR can accept the input and return the form fields mapping
+        // make the POST request to OCRSpace
         String pdfUrl = runSearchablePDF.sendPost();
         return runDocIntelligence.OCRLCInfoRequest(pdfUrl);
     }
