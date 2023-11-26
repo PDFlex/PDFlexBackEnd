@@ -8,23 +8,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/edit-form")
+@RequestMapping("/form-info")
 
 public class EditFormController {
-    @Autowired // Does this rid the need for a constructor? Also why error?
+    @Autowired
     private EditFormInputBoundary editFormUseCaseInteractor;
 
-    // TODO: Recreate post and get mappings
-    // TODO: Do we need a controller
-    @PostMapping
-    public ResponseEntity<Object> getFormInfo(){
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    public void execute() {
-        EditFormInputData editFormInputData = new EditFormInputData(); //take input data as parameters
+    @PostMapping("/post")
+    public ResponseEntity<Object> getFormInfo(@RequestBody Map<String, Object> formInfo){
+        EditFormInputData editFormInputData = new EditFormInputData(formInfo);
         editFormUseCaseInteractor.execute(editFormInputData);
+        return new ResponseEntity<>("Form Information: " + formInfo, HttpStatus.OK);
     }
 }
