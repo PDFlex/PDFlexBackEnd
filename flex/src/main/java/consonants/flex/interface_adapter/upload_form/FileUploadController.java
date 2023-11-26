@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Base64;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -37,6 +38,8 @@ public class FileUploadController {
         Binary data;
         try {
             data = dataAccessObject.serializePDF();
+            String s = Base64.getEncoder().encodeToString(data.getData());
+//            System.out.println(s);
             result = documentRepository.save(new FileDocument(name, claimId, data, LocalDate.now()));
             return new ResponseEntity<>(result.getId(), headers, HttpStatus.OK);
         } catch (IOException e) {

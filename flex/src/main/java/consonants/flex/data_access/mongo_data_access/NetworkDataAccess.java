@@ -20,6 +20,12 @@ public class NetworkDataAccess extends consonants.flex.data_access.mongo_data_ac
 
     @Override
     public Binary serializePDF() throws IOException {
+        System.out.println(this.file);
+        System.out.println(convertPDFToByteArrayUsingFile().getClass());
+        System.out.println(byteArrayToBinary(convertPDFToByteArrayUsingFile()).getData());
+        System.out.println(new String(byteArrayToBinary(convertPDFToByteArrayUsingFile()).getData()));
+
+
         return byteArrayToBinary(convertPDFToByteArrayUsingFile());
     }
 }

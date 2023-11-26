@@ -1,28 +1,22 @@
 package consonants.flex.data_access.mongo_data_access;
 
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import org.bson.types.Binary;
 import org.json.JSONObject;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.Iterator;
-
-import static io.netty.handler.codec.base64.Base64.*;
 
 public class SearchablePDF{
 
-    private final Binary base64PDF;
+    private final String base64PDF;
     String url = "https://api.ocr.space/parse/image"; // OCR API Endpoints
 
-        public SearchablePDF(Binary base64PDF) {
+        public SearchablePDF(String base64PDF) {
 
             this.base64PDF = base64PDF;
         }
@@ -50,19 +44,12 @@ public class SearchablePDF{
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
 
-//
-//        byte[] decoded = Base64.getDecoder().decode(base64PDF.getData());
-//        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
-//        System.out.println(decodedStr);
-
-
-
         JSONObject postDataParams = new JSONObject();
 
         postDataParams.put("apikey", "K88786854088957");//TODO: add to .env file
         postDataParams.put("isOverlayRequired", false);
         //TODO: hard-code base64 for now since postman is messing up the format
-        postDataParams.put("base64Image", "data:application/pdf;");
+        postDataParams.put("base64Image", "data:application/pdf;" + base64PDF);
         //postDataParams.put("OCREngine", "2");
         postDataParams.put("isCreateSearchablePdf", true);
         postDataParams.put("isSearchablePdfHideTextLayer", true);

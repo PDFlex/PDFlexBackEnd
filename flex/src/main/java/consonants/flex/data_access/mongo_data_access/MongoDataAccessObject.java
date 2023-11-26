@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.util.*;
 
@@ -134,26 +135,24 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
 
     // extracts base64 string from the documents collection for the relevant claim
     @Override
-    public Binary extractPDFBase64(int claimId) {
+    public String ExtractPDFBase64(int claimId) {
         // retrieve document object, so we can get the value from the "content" key
 
         Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
 
         FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
-        System.out.println("TESTTT");
         List<FileDocument> docs = mongoTemplate.find(query, FileDocument.class, "documents");
-//        for(FileDocument doc : docs){
-//            System.out.println(doc.getContent().toString());
-//        }
-        String binaryStr = docs.get(0).getContent().toString(); //TODO: check if this violates CA
-        System.out.println(binaryStr);
-        return docs.get(0).getContent();
+        Binary binaryStr = docs.get(0).getContent(); // TODO: check if the getContent violates CA
+        String base64Str = Base64.getEncoder().encodeToString(binaryStr.getData());
+
+        return base64Str;
 
     }
 
-    public Map<String, Object> OCRLCInfoRequestCall(Binary base64PDF) throws Exception{ // TODO: look into `throws Exception`
 
-        SearchablePDF runSearchablePDF = new SearchablePDF(base64PDF);
+    public Map<String, Object> OCRLCInfoRequestCall() throws Exception{ // TODO: look into `throws Exception`
+        String base64 = ExtractPDFBase64(1007890); // TODO: when we have client/claim persistence on the frontend, access the information from there instead of hardcoding the claimId
+        SearchablePDF runSearchablePDF = new SearchablePDF(base64);
         DocumentIntelligence runDocIntelligence = new DocumentIntelligence();
 
         // OCRSpace creates searchable pdf url so Azure OCR can accept the input and return the form fields mapping
