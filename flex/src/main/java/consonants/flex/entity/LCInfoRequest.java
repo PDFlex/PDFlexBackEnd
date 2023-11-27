@@ -1,7 +1,16 @@
 package consonants.flex.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 
+@Document(collection = "forms")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LCInfoRequest extends Form{
 
     // **** claims checklist
