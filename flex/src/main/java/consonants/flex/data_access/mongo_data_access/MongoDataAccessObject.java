@@ -4,6 +4,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.use_case.edit_form.EditFormDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;

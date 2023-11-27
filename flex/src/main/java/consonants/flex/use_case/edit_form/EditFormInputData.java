@@ -1,12 +1,18 @@
 package consonants.flex.use_case.edit_form;
 
+import lombok.Getter;
+
 import java.util.Map;
 
+@Getter
 public class EditFormInputData {
-    Map<String, Object> formInfo; // Why does the variable get greyed out when I use private final?
+    final private Map<String, Object> formFields;
+    final private String name;
+    final private int claimId;
 
-    // Data manipulation
-    public EditFormInputData(Map<String, Object> formInfo) {
-        this.formInfo = formInfo;
+    public EditFormInputData(Map<String, Object> formFields, String name, int claimId) {
+        this.formFields = formFields;
+        this.name = name;
+        this.claimId = claimId;
     }
 }
