@@ -4,12 +4,11 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Form;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public interface CreateNewClaimDataAccessInterface {
 
     boolean claimsExist();
 
     Claim createClaim(ArrayList<Form> forms, int status, int clientId, int claimId);
-
-    Client findClient(int clientId);
 }
