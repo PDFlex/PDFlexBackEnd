@@ -25,7 +25,7 @@ public class CreateNewClaimController {
         int clientId = Integer.parseInt(info.get("clientId"));
 
         CreateNewClaimInputData createNewClaimInputData = new CreateNewClaimInputData(clientId);
-        Integer claimId = createNewClaimInteractor.execute(createNewClaimInputData);
+        Integer claimId = createNewClaimInteractor.execute(createNewClaimInputData).getClaimId();
 
         return new ResponseEntity<>(claimId, HttpStatus.CREATED);
     }
