@@ -20,14 +20,14 @@ public class CreateNewClaimController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createClaim(@RequestBody Map<String, String> info) {
+    public ResponseEntity<Integer> createClaim(@RequestBody Map<String, String> info) {
 
         int clientId = Integer.parseInt(info.get("clientId"));
 
         CreateNewClaimInputData createNewClaimInputData = new CreateNewClaimInputData(clientId);
-        createNewClaimInteractor.execute(createNewClaimInputData);
+        Integer claimId = createNewClaimInteractor.execute(createNewClaimInputData);
 
-        return new ResponseEntity<>("New Claim Created for " + info.get("firstName"), HttpStatus.CREATED);
+        return new ResponseEntity<>(claimId, HttpStatus.CREATED);
     }
 
 }

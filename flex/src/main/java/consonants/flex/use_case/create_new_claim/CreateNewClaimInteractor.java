@@ -20,7 +20,7 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
         this.createNewClaimOutputBoundary = createNewClaimOutputBoundary;
     }
     @Override
-    public void execute(CreateNewClaimInputData createNewClaimInputData) {
+    public Integer execute(CreateNewClaimInputData createNewClaimInputData) {
         /*
          * This method must:
          * - Take in a user id
@@ -38,6 +38,6 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
 
         // Need to update the client's data in the Database
         Claim claim = createNewClaimDataAccessObject.createClaim(forms, status, createNewClaimInputData.clientId, claimId);
-
+        return claim.getClaimId();
     }
 }
