@@ -4,6 +4,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.use_case.submit_claim.SubmitClaimDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, SubmitClaimDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -86,6 +88,28 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     }
 
     /**
+     * Checks if each form in the claim is complete. If yes, submits the claim and updates the
+     * claimStatus accordingly to claimStatus.SUBMITTED. This value should be checked in the EditFormUseCase
+     * and UploadFormUseCase to prevent any further edits to forms after the claim has been submitted.
+     * @param clientId refers to the Client to whom the Claim belongs to.
+     * @param claimId refers to the Claim that one wants to submit.
+     * @return A Boolean true if claim was submitted successfully. False if not submitted.
+     */
+    @Override
+    public Boolean submitClaim(int clientId, int claimId) {
+        // need to add check for existence of such claim belonging to client
+        // if such claim exists, need to call forms method to instantiate list of forms containing appropriate forms to check
+        List<Form> forms = new ArrayList<>();
+        for (Form form: forms) {
+            if (!(form.getStatus() == Form.formStatus.CONFIRMED)) {
+                return false;
+            }
+        }
+        Claim claim = claimRepository.findClaimByClaimId(claimId);
+        return modifyClaimStatus(claimId, "SUBMITTED");
+    }
+
+    /**
      * Can use this template to create methods to modify a specific field in client object
      * for example, field = "firstName", will update the firstName attribute of the Client
      * findAndModify returns a Client Object; can change the return to void, boolean, etc, as needed.
@@ -111,6 +135,19 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
 
         return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+    }
+
+    /**
+     * Like previous method, this finds a Client using a criteria. This method is pre-set
+     * to the firstName field. Returns a Client Object. Can change return type if needed.
+     * @return The Client with modified fields.
+     */
+    public Boolean modifyClaimStatus(int claimId, String status) {
+        Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+        Update updateDefinition = new Update().set("status", status);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+        Claim claim = mongoTemplate.findAndModify(query, updateDefinition, options, Claim.class);
+        return true;
     }
 
     /**
@@ -142,7 +179,7 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
      * @param claimId The claimId of the Claim.
      * @return The Claim with the claimId; null if it doesn't exist.
      */
-    public Optional<Claim> getClaimById(int claimId) {
+    public Claim getClaimById(int claimId) {
         return claimRepository.findClaimByClaimId(claimId);
     }
 
@@ -186,5 +223,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         List<Client> lst = mongoTemplate.find(query, Client.class);
         return !lst.isEmpty();
     }
+
 }
 
