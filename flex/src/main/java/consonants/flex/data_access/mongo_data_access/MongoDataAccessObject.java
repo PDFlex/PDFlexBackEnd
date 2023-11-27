@@ -4,6 +4,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.use_case.edit_form.EditFormDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, EditFormDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -190,5 +191,10 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void saveForm() {
+
     }
 }

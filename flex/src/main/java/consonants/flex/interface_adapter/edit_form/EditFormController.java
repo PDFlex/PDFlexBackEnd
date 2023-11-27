@@ -19,9 +19,10 @@ public class EditFormController {
     private EditFormInputBoundary editFormUseCaseInteractor;
 
     @PostMapping("/post")
-    public ResponseEntity<Object> getFormInfo(@RequestBody Map<String, Object> formInfo){
-        EditFormInputData editFormInputData = new EditFormInputData(formInfo);
-        editFormUseCaseInteractor.execute(editFormInputData);
-        return new ResponseEntity<>("Form Information: " + formInfo, HttpStatus.OK);
+    public ResponseEntity<Object> getFormInfo(@RequestParam("form") Map<String, Object> formFields,
+                                              @RequestParam("formName") String name,
+                                              @RequestParam("claimId") int claimId){
+        EditFormInputData editFormInputData = new EditFormInputData(formFields, name, claimId);
+        return editFormUseCaseInteractor.execute(editFormInputData);
     }
 }
