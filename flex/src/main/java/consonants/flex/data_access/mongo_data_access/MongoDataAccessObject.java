@@ -4,7 +4,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
-import consonants.flex.use_case.edit_form.EditFormDataAccessInterface;
+import consonants.flex.use_case.save_form.SaveFormDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, SaveFormDataAccessInterface{
 
     @Autowired
     private ClientRepository clientRepository;
@@ -186,6 +184,22 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         query.addCriteria(Criteria.where("clientId").is(clientId));
         List<Client> lst = mongoTemplate.find(query, Client.class);
         return !lst.isEmpty();
+    }
+
+    @Override
+    public void modifyForm(int claimId, Map<String, Object> formFields) {
+        for (Map.Entry<String, Object> formField : formFields.entrySet()) {
+            if (!formField.getKey().equals("claimId")) {
+                // access form we want to populate by formId
+                Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+
+                Update updateDefinition = new Update().set(formField.getKey(), formField.getValue());
+                FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+                mongoTemplate.findAndModify(query, updateDefinition, options, Form.class, "forms");
+            }
+
+        }
     }
 }
 
