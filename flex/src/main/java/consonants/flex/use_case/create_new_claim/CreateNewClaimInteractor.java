@@ -1,22 +1,25 @@
 package consonants.flex.use_case.create_new_claim;
 
-public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
-    final CreateNewClaimDataAccessInterface createNewClaimDataAccessObject;
-//    final CreateNewClaimOutputBoundary CreateNewClaimPresenter;
+import consonants.flex.entity.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
-    public CreateNewClaimInteractor(CreateNewClaimDataAccessInterface createNewClaimDataAccessInterface,
-                                    CreateNewClaimOutputBoundary createNewClaimOutputBoundary) {
+@RestController
+public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
+    @Autowired
+    final CreateNewClaimDataAccessInterface createNewClaimDataAccessObject;
+
+    public CreateNewClaimInteractor(CreateNewClaimDataAccessInterface createNewClaimDataAccessInterface) {
         this.createNewClaimDataAccessObject = createNewClaimDataAccessInterface;
-//        this.createNewClaimPresenter = createNewClaimOutputBoundary;
     }
     @Override
-    public void execute() {
-        /**
-         * This method must:
-         * - Take in a user object
-         * - create a new Claim object
-         * - call on the User's Add Claim method to add in said new claim object
-         */
-
+    public CreateNewClaimOutputData execute(CreateNewClaimInputData createNewClaimInputData) {
+        /*
+         * This method calls on the Data Access Object to create a claim for the provided clientId
+         * Returns the generated claim id.
+         *
+         **/
+        Claim claim = createNewClaimDataAccessObject.createClaim(createNewClaimInputData.clientId);
+        return new CreateNewClaimOutputData(claim.getClaimId());
     }
 }
