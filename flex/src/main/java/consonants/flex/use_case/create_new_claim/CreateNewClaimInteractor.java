@@ -31,13 +31,9 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
         // Initialize Forms List to be empty
         ArrayList<Form> forms = new ArrayList<>();
 
-//        //TODO: Function that generates new claim id, tracking prior ones
-        int claimId = 1;
-//        // TODO: use enum for statuses
-        int status = 0;
 
         // Need to update the client's data in the Database
         Claim claim = createNewClaimDataAccessObject.createClaim(forms, status, createNewClaimInputData.clientId, claimId);
-        return new CreateNewClaimOutputData(claimId);
+        return new CreateNewClaimOutputData(claim.getClaimId());
     }
 }

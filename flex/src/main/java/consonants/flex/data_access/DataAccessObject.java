@@ -49,11 +49,6 @@ public class DataAccessObject implements CreateNewClaimDataAccessInterface {
         return claim;
     }
 
-    @Override
-    public Client findClient(int clientId) {
-        return null;
-    }
-
     public Form createForm(int formId, int claimId, int clientId) {
         Form form = formDataAccessObject.insert(new Form(formId, claimId, clientId));
 
