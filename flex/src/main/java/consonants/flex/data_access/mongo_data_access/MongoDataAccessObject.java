@@ -90,18 +90,25 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     }
 
     /**
-     * Checks if each form in the claim is complete. If yes, submits the claim and updates the
-     * claimStatus accordingly to claimStatus.SUBMITTED. This value should be checked in the EditFormUseCase
-     * and UploadFormUseCase to prevent any further edits to forms after the claim has been submitted.
+     * Generates a list of forms in the claim by calling on the getFormsListAsForms method after verifying that choice
+     * of clientId and claimId are valid and checks if each form in the claim is complete.
+     * If yes, submits the claim and updates the claimStatus accordingly to claimStatus.SUBMITTED.
+     * This value should be checked in the EditFormUseCase and UploadFormUseCase to prevent any further edits
+     * to forms after the claim has been submitted.
      * @param clientId refers to the Client to whom the Claim belongs to.
      * @param claimId refers to the Claim that one wants to submit.
-     * @return A Boolean true if claim was submitted successfully. False if not submitted.
+     * @return A Boolean true if claim status was set to claimStatus.SUBMITTED successfully. Returns
+     * false if any form in the claim a form status other than formStatus.CONFIRMED.
      */
     @Override
     public Boolean submitClaim(int clientId, int claimId) {
-        // need to add check for existence of such claim belonging to client
-        // if such claim exists, need to call forms method to instantiate list of forms containing appropriate forms to check
         List<Form> forms = new ArrayList<>();
+        if (claimExistsById(claimId) && clientExistsById(clientId)) {
+            if (!getFormsListAsForms(clientId, claimId).isEmpty()) {
+                forms = getFormsListAsForms(clientId, claimId);
+            }
+        }
+
         for (Form form: forms) {
             if (!(form.getStatus() == Form.formStatus.CONFIRMED)) {
                 return false;
@@ -109,6 +116,15 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
         Claim claim = claimRepository.findClaimByClaimId(claimId);
         return modifyClaimStatus(claimId, "SUBMITTED");
+    }
+
+    /**
+     * @param claimId refers to the Claim you are checking the status of.
+     * @return A String of the claim status. Options are INCOMPLETE, COMPLETE, SUBMITTED.
+     */
+    public String claimStatus(int claimId) {
+        Claim claim = getClaimById(claimId);
+        return claim.claimStatusToString();
     }
 
     /**
