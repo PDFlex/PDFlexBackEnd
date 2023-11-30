@@ -149,8 +149,8 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
      */
     public List<Integer> getClaimFormIds(int claimId) {
         if (claimExistsById(claimId)) {
-            Optional<Claim> claim = claimRepository.findClaimByClaimId(claimId);
-            return claim.get().getForms();
+            Claim claim = claimRepository.findClaimByClaimId(claimId);
+            return claim.getForms();
         }
         return new ArrayList<>();
     }
