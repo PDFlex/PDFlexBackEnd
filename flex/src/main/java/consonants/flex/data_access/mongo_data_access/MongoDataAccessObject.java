@@ -6,6 +6,7 @@ import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
+import consonants.flex.use_case.view_claims_dashboard.ViewClaimsDashboardDataAccessInterface;
 import consonants.flex.use_case.view_forms_dashboard.ViewFormsDashboardDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -21,7 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewFormsDashboardDataAccessInterface {
+
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface {
+
 
     @Autowired
     private ClientRepository clientRepository;
@@ -134,6 +137,7 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
         return new ArrayList<>();
     }
+
     /**
      * @return A List of all the Forms in the MongoDB.
      */
@@ -145,8 +149,8 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
      */
     public List<Integer> getClaimFormIds(int claimId) {
         if (claimExistsById(claimId)) {
-            Optional<Claim> claim = claimRepository.findClaimByClaimId(claimId);
-            return claim.get().getForms();
+            Claim claim = claimRepository.findClaimByClaimId(claimId);
+            return claim.getForms();
         }
         return new ArrayList<>();
     }
@@ -165,10 +169,25 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
      * @param claimId The claimId of the Claim.
      * @return The Claim with the claimId; null if it doesn't exist.
      */
-    public Optional<Claim> getClaimById(int claimId) {
-        return claimRepository.findClaimByClaimId(claimId);
+    public Claim getClaimById(int claimId) {
+        if (claimExistsById(claimId)) {
+            return claimRepository.findClaimByClaimId(claimId);
+        }
+        return null;
     }
 
+    /**
+     * Retrieves Claim objects from the MongoDB with the corresponding unique claimIds.
+     * @param claimIds The claimIds found in a Client's claimsList (List of Integers).
+     * @return A list of Claim objects with the claimIds specified in the parameter List; empty if parameter is empty.
+     */
+    public List<Claim> getClientClaimsListAsClaims(List<Integer> claimIds) {
+        List<Claim> claims = new ArrayList<>();
+        for (int claimId : claimIds) {
+            claims.add(getClaimById(claimId));
+        }
+        return claims;
+    }
     /**
      * Gets the Form with the unique formId from the MongoDB.
      * This method works for the general 'Form' class; that is,
@@ -247,7 +266,5 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         List<Claim> lst = mongoTemplate.find(query, Claim.class);
         return !lst.isEmpty();
     }
-
-
 }
 
