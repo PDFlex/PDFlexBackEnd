@@ -5,6 +5,7 @@ import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
 import consonants.flex.use_case.submit_claim.SubmitClaimDataAccessInterface;
+import consonants.flex.use_case.create_new_claim.CreateNewClaimDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import consonants.flex.use_case.view_claims_dashboard.ViewClaimsDashboardDataAccessInterface;
@@ -24,8 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, SubmitClaimDataAccessInterface {
-
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, SubmitClaimDataAccessInterface {
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -188,7 +188,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
         return new ArrayList<>();
     }
-
     /**
      * @return A List of all the Forms in the MongoDB.
      */
