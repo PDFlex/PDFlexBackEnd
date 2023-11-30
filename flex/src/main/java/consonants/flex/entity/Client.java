@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "clients")
 @Data
@@ -17,29 +18,38 @@ public class Client {
 
     @Id
     private ObjectId id;
-    private ArrayList<Claim> claimsList;
+    private List<Integer> claimsList;
     private int clientId;
     private String firstName;
     private String lastName;
 
     public Client(int clientId, String firstName, String lastName){
-        this.clientId = clientId;
+        this.clientId = clientId; // randomly created in createClaim method in DAO
         this.firstName = firstName;
         this.lastName = lastName;
-        this.claimsList = new ArrayList<Claim>();
+        this.claimsList = new ArrayList<Integer>();
     }
 
-    // @ Override? (See CA CommonUser.java)
-    public ArrayList<Claim> getClaims(){return claimsList;}
-
-    public Claim getClaim(int claimId){
-        // TODO
-        return null;
+    public int getClientId(){
+        return this.clientId;
     }
 
-    public void deleteClaim(int claimId){
-        // Reconsider the return type. Return the claim that was deleted? Return a String with "sucesss" or "failure?"
-        // TODO
+
+    public List<Integer> getClaims() {return claimsList;}
+
+
+    /**
+     * @param claimId
+     * @return returns true if removal of claim with claimId was successful; false otherwise.
+     */
+    public boolean removeClaimFromClient(int claimId){
+        for (int claimNumber : this.claimsList) {
+            if (claimNumber == claimId) {
+                this.claimsList.remove(claimNumber);
+                return true;
+            }
+        }
+        return false;
     }
 
 

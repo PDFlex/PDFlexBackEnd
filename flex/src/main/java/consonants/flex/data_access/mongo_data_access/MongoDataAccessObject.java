@@ -1,10 +1,18 @@
 package consonants.flex.data_access.mongo_data_access;
 
-import consonants.flex.entity.*;
 import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
-import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import org.bson.types.Binary;
+import consonants.flex.entity.Client;
+import consonants.flex.entity.Claim;
+import consonants.flex.entity.Form;
+import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.use_case.create_new_claim.CreateNewClaimDataAccessInterface;
+import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
+import consonants.flex.use_case.login.LoginClientDataAccessInterface;
+import consonants.flex.use_case.view_claims_dashboard.ViewClaimsDashboardDataAccessInterface;
+import consonants.flex.use_case.view_forms_dashboard.ViewFormsDashboardDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,7 +24,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, UploadFormDataAccessInterface {
+
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -29,18 +38,33 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<Client> allClients() {return clientRepository.findAll();}
-    public List<Claim> allClaims() {return claimRepository.findAll();}
-    public List<Form> allForms() {return formRepository.findAll();}
-
-
-    public Client createClient(int clientId, String firstName, String lastName) {
-        Client client = clientRepository.insert(new Client(clientId, firstName, lastName));
-        return client;
+    /**
+     * For our purposes, this method will not be used because we do not have a SignupUseCase,
+     * thus plan to hardcode Clients into our DB.
+     * Creates a new Client in the MongoDB. Automatically creates its clientId based on
+     * the number of Clients that already exist in the MongoDB.
+     * @param firstName The first name of the client.
+     * @param lastName The last name of the client.
+     * @return The Client object whose data corresponds to its data in the MongoDB.
+     */
+    public Client createClient(String firstName, String lastName) {
+        int clientId = 10000 + getAllClients().size() + 1;
+        return clientRepository.insert(new Client(clientId, firstName, lastName));
     }
 
-    public Claim createClaim(ArrayList<Form> forms, int status, int clientId, int claimId) {
-        Claim claim = claimRepository.insert(new Claim(forms, status, clientId, claimId));
+    /**
+     * Creates a new Claim in our MongoDB. Automatically creates its claimId based on
+     * the number of Claims that already exist in the MongoDB.
+     * @param clientId The clientId of the Client that this Claim is associated with.
+     * @return The Claim object whose data corresponds to its data in the MongoDB.
+     */
+    public Claim createClaim(int clientId) {
+        int claimId = 1000 + getAllClaims().size() + 1;
+        Claim claim = claimRepository.insert(new Claim(clientId, claimId));
+
+        ArrayList<String> pastPhysicianNames = new ArrayList<String>();
+        ArrayList<String> pastAddresses = new ArrayList<String>();
+        Form form = createLCInfoRequestForm(claimId, clientId, "", "", "", "", false, false, false, "", false, "", "", "", "", "", pastPhysicianNames, pastAddresses, "", "", "","","","","","","","","","","","");
 
         mongoTemplate.update(Client.class)
                 .matching(Criteria.where("clientId").is(clientId))
@@ -50,8 +74,15 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return claim;
     }
 
-    public Form createForm(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned) {
-        Form form = formRepository.insert(new Form(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned));
+    /**
+     * Creates a new Form (of type Life Claim Information Request) in our MongoDB.
+     * Automatically creates its formId based on the number of Forms that already exist in the MongoDB.
+     * Parameter comments omitted due to length.
+     * @return The Form object with the specified data.
+     */
+    public Form createLCInfoRequestForm(int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned, String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
+        int formId = getAllForms().size() + 1;
+        Form form = formRepository.insert(new LCInfoRequest(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned, dateOfBirth, completedDeathCertificate, attachedDeathCertificate, completedClaimSubmission,causeOfDeath, deceasedHospitalized, hospitalName, hospitalAddress, attendingPhysicianName, attendingPhysicianAddress, attendingPhysicianContactNumber, pastPhysicianNames, pastPhysicianAddresses, familyPhysicianName, familyPhysicianAddress, familyPhysicianContactNumber, occupation, employer, dateLastWorked, workAddress, employerContactNumber, reasonInsuredStoppedWorking, nameOfKin, kinAddress, relationshipToInsured, kinContactNumber, kinSignature));
 
         mongoTemplate.update(Claim.class)
                 .matching(Criteria.where("claimId").is(claimId))
@@ -61,43 +92,181 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return form;
     }
 
-    public Optional<Client> findClient(int clientId) {
-//        The below commented out method body works. It may be a better way to deal with null returns. i.e. when lst is empty.
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("clientId").is(clientId));
-//        List<Client> lst = mongoTemplate.find(query, Client.class);
-//        return lst.get(0);
-        Optional<Client> client = clientRepository.findClientByClientId(clientId);
-        return client;
+    /**
+     * Can use this template to create methods to modify a specific field in client object
+     * for example, field = "firstName", will update the firstName attribute of the Client
+     * findAndModify returns a Client Object; can change the return to void, boolean, etc, as needed.
+     * @return The Client with modified fields.
+     */
+    public Client modifyClient(int clientId, String field, Object newEntry) {
+
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set(field, newEntry);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, Client.class);
     }
 
-    public Optional<Claim> findClaim(int claimId) {
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("claimId").is(claimId));
-//        Claim claim = (Claim) mongoTemplate.find(query, Claim.class);
-        Optional<Claim> claim = claimRepository.findClaimByClaimId(claimId);
-        return claim;
+    /**
+     * Like previous method, this finds a Client using a criteria. This method is pre-set
+     * to the firstName field. Returns a Client Object. Can change return type if needed.
+     * @return The Client with modified fields.
+     */
+    public Client modifyClientFirstName(int clientId, String newFirstName) {
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set("firstName", newFirstName);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
     }
 
-    public Optional<Form> findForm(int formId) {
-//        Query query = new Query();
-//        query.addCriteria(Criteria.where("formId").is(formId));
-//        Form form = (Form) mongoTemplate.find(query, Form.class);
-        Optional<Form> form = formRepository.findFormByFormId(formId);
-        return form;
+    /**
+     * @return A List of all the Clients in the MongoDB.
+     */
+    public List<Client> getAllClients() {return clientRepository.findAll();}
+
+    /**
+     * @return A List of all the Claims in the MongoDB.
+     */
+    public List<Claim> getAllClaims() {return claimRepository.findAll();}
+
+    /**
+     * @return An ArrayList of Integers containing the claimIds belonging to a Client.
+     */
+    public List<Integer> getClientClaimIds(int clientId) {
+        if (clientExistsById(clientId)) {
+            Optional<Client> client = clientRepository.findClientByClientId(clientId);
+            return client.get().getClaimsList();
+        }
+        return new ArrayList<>();
+    }
+    /**
+     * @return A List of all the Forms in the MongoDB.
+     */
+    public List<Form> getAllForms() {return formRepository.findAll();}
+
+    /**
+     * @return An ArrayList of Integers containing the formIds belonging to a Claim. Returns empty ArrayList if no
+     * such claimId is found.
+     */
+    public List<Integer> getClaimFormIds(int claimId) {
+        if (claimExistsById(claimId)) {
+            Claim claim = claimRepository.findClaimByClaimId(claimId);
+            return claim.getForms();
+        }
+        return new ArrayList<>();
     }
 
-    public boolean loginClientExists(int clientId, String firstName, String lastName) {
+    /**
+     * Retrieves the Client from the MongoDB with the corresponding unique clientId.
+     * @param clientId The clientId of the Client.
+     * @return The Client with the clientId; null if it does not exist.
+     */
+    public Optional<Client> getClientById(int clientId) {
+        return clientRepository.findClientByClientId(clientId);
+    }
+
+    /**
+     * Retrieves the Claim from the MongoDB with the corresponding unique claimId.
+     * @param claimId The claimId of the Claim.
+     * @return The Claim with the claimId; null if it doesn't exist.
+     */
+    public Claim getClaimById(int claimId) {
+        if (claimExistsById(claimId)) {
+            return claimRepository.findClaimByClaimId(claimId);
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves Claim objects from the MongoDB with the corresponding unique claimIds.
+     * @param claimIds The claimIds found in a Client's claimsList (List of Integers).
+     * @return A list of Claim objects with the claimIds specified in the parameter List; empty if parameter is empty.
+     */
+    public List<Claim> getClientClaimsListAsClaims(List<Integer> claimIds) {
+        List<Claim> claims = new ArrayList<>();
+        for (int claimId : claimIds) {
+            claims.add(getClaimById(claimId));
+        }
+        return claims;
+    }
+    /**
+     * Gets the Form with the unique formId from the MongoDB.
+     * This method works for the general 'Form' class; that is,
+     * it retrieves any object in the 'pdflex-db > forms' collection in the MongoDB.
+     * @param formId The formId of the Form.
+     * @return The Form with the formId; null if it doesn't exist.
+     */
+    public Form getFormById(int formId) {
+        return formRepository.findFormByFormId(formId);
+    }
+
+    /**
+     * Gets the LC Info Request Form with the unique formId from the MongoDB.
+     * This method works for the subclass LCInfoRequest; that is,
+     * it retrieves an LCInfoRequest object in the 'pdflex-db > forms' collection in the MongoDB.
+     * @param formId The formId of the Form.
+     * @return The LCInfoRequest with the formId; null if it doesn't exist.
+     */
+    public LCInfoRequest getLCInfoRequestFormById(int formId) {
+        return formRepository.findLCFormByFormId(formId);
+    }
+
+    /**
+     * Retrieves Form objects from the MongoDB with the corresponding unique formIds.
+     * @param clientId is the Client whose claim we are looking at. Uses this to generate list of claimIds that verifies
+     *                 if we are looking at the correct claim.
+     * @param claimId refers to the Claim containing the forms of interest.
+     * @return A list of Form objects with the formIds specified in the getClaimFormIds call; empty if this list is empty
+     */
+    @Override
+    public List<Form> getFormsListAsForms(int clientId, int claimId) {
+        List<Integer> claimIds = getClientClaimIds(clientId);
+        List<Form> forms = new ArrayList<>();
+        if (claimIds.contains(claimId)) {
+            List<Integer> formIds = getClaimFormIds(claimId);
+            for (int formId: formIds) {
+                forms.add(getLCInfoRequestFormById(formId));
+            }
+        }
+        return forms;
+    }
+
+    /**
+     * Returns a List of all the Clients in the MongoDB whose first name starts with a certain letter.
+     * @param letter The first letter of the Client's first name.
+     * @return The List of Clients.
+     */
+    public List<Client> getClientsByFirstNameFirstLetter(String letter) {
+        // can use this template to find clients by the first letter of their first names
+        Query query = new Query();
+        query.addCriteria(Criteria.where("firstName").regex(letter));
+        List<Client> clients = mongoTemplate.find(query, Client.class);
+        return clients;
+    }
+
+    /**
+     * @return An alphabetically sorted (by first name) List of all Clients.
+     */
+    public List<Client> getClientsByFirstNameAlphabetically() {
+        Query query = new Query();
+        query.with(Sort.by(Sort.Direction.ASC, "firstName"));
+        List<Client> clients = mongoTemplate.find(query, Client.class);
+        return clients;
+    }
+
+    public Boolean clientExistsById(int clientId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("clientId").is(clientId));
-        query.addCriteria(Criteria.where("firstName").is(firstName));
-        query.addCriteria(Criteria.where("lastName").is(lastName));
         List<Client> lst = mongoTemplate.find(query, Client.class);
+        return !lst.isEmpty();
+    }
 
-        if (!lst.isEmpty()) {
-            return true;
-        }
-        return false;
+    public Boolean claimExistsById(int claimId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("claimId").is(claimId));
+        List<Claim> lst = mongoTemplate.find(query, Claim.class);
+        return !lst.isEmpty();
     }
     public Client modifyFirstName(int clientId, String newFirstName) {
         // Like previous method, this finds a Client using a criteria. This method is pre-set
@@ -161,3 +330,4 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     }
 
 }
+
