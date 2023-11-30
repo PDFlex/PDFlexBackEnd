@@ -1,9 +1,12 @@
 package consonants.flex.data_access.mongo_data_access;
 
+import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
+import org.bson.types.Binary;
 import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.entity.FileDocument;
 import consonants.flex.use_case.create_new_claim.CreateNewClaimDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
@@ -18,12 +21,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface {
+
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -31,6 +34,8 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     private ClaimRepository claimRepository;
     @Autowired
     private FormRepository formRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -264,5 +269,66 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         List<Claim> lst = mongoTemplate.find(query, Claim.class);
         return !lst.isEmpty();
     }
+    public Client modifyFirstName(int clientId, String newFirstName) {
+        // Like previous method, this finds a Client using a criteria. This method is pre-set
+        // to the firstName field. Returns a Client Object.
+        // can change return type of modifyFirstName as needed
+        Query query = new Query().addCriteria(Criteria.where("clientId").is(clientId));
+        Update updateDefinition = new Update().set("firstName", newFirstName);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+        return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+    }
+
+    public void modifyForm(int claimId, Map<String, Object> formFields) {
+
+        for (Map.Entry<String, Object> formField : formFields.entrySet()) {
+            // access form we want to populate by formId
+            Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+
+            Update updateDefinition = new Update().set(formField.getKey(), formField.getValue());
+            FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+
+            mongoTemplate.findAndModify(query, updateDefinition, options, Form.class, "forms");
+
+        }
+    }
+
+    // saves pdf to MongoDB in the documents collection
+    public void saveDocument(String fileName, int claimId, Binary data, LocalDate date){
+        FileDocument fileDocument = new FileDocument(fileName, claimId, data, date);
+        documentRepository.save(fileDocument);
+
+    }
+
+    // extracts base64 string from the documents collection for the relevant claim
+    @Override
+    public String ExtractPDFBase64(int claimId) {
+        // retrieve document object, so we can get the value from the "content" key
+
+        Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+
+        List<FileDocument> docs = mongoTemplate.find(query, FileDocument.class, "documents");
+
+        Binary binaryStr = docs.get(0).getContent(); // TODO: check if the getContent violates CA
+        String base64Str = Base64.getEncoder().encodeToString(binaryStr.getData());
+
+        return base64Str;
+    }
+
+    public Map<String, Object> OCRLCInfoRequestCall(int claimId) throws Exception{ // TODO: look into `throws Exception`
+        // gets base64 pdf string
+        String base64 = ExtractPDFBase64(claimId); // TODO: when we have client/claim persistence on the frontend, access the information from there instead of hardcoding the claimId
+
+        // instantiate a SearchablePDF object to get the searchable PDF URL from OCRSpace
+        SearchablePDF runSearchablePDF = new SearchablePDF(base64);
+        // instantiate a DocumentIntelligence object to pass the searchable PDF URL into Azure's Document Intelligence OCR
+        DocumentIntelligence runDocIntelligence = new DocumentIntelligence();
+
+        // make the POST request to OCRSpace
+        String pdfUrl = runSearchablePDF.sendPost();
+        return runDocIntelligence.OCRLCInfoRequest(pdfUrl);
+    }
+
 }
 
