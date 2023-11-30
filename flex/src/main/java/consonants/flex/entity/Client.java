@@ -33,7 +33,9 @@ public class Client {
     public int getClientId(){
         return this.clientId;
     }
-    public List<Integer> getClaims(){return claimsList;}
+
+
+    public List<Integer> getClaims() {return claimsList;}
 
 
     /**

@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface ClaimRepository extends MongoRepository<Claim, ObjectId> {
-    Optional<Claim> findClaimByClaimId(int claimId);
+    Claim findClaimByClaimId(int claimId);
 }
