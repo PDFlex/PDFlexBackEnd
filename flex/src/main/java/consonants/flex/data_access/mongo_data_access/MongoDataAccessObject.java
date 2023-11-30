@@ -7,6 +7,7 @@ import consonants.flex.entity.LCInfoRequest;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
 import consonants.flex.use_case.login.LoginClientDataAccessInterface;
 import consonants.flex.use_case.view_claims_dashboard.ViewClaimsDashboardDataAccessInterface;
+import consonants.flex.use_case.view_forms_dashboard.ViewFormsDashboardDataAccessInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -21,7 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface {
+
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface {
+
 
     @Autowired
     private ClientRepository clientRepository;
@@ -133,13 +136,24 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
             return client.get().getClaimsList();
         }
         return new ArrayList<>();
-
     }
 
     /**
      * @return A List of all the Forms in the MongoDB.
      */
     public List<Form> getAllForms() {return formRepository.findAll();}
+
+    /**
+     * @return An ArrayList of Integers containing the formIds belonging to a Claim. Returns empty ArrayList if no
+     * such claimId is found.
+     */
+    public List<Integer> getClaimFormIds(int claimId) {
+        if (claimExistsById(claimId)) {
+            Optional<Claim> claim = claimRepository.findClaimByClaimId(claimId);
+            return claim.get().getForms();
+        }
+        return new ArrayList<>();
+    }
 
     /**
      * Retrieves the Client from the MongoDB with the corresponding unique clientId.
@@ -181,8 +195,39 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
      * @param formId The formId of the Form.
      * @return The Form with the formId; null if it doesn't exist.
      */
-    public Optional<Form> getFormById(int formId) {
+    public Form getFormById(int formId) {
         return formRepository.findFormByFormId(formId);
+    }
+
+    /**
+     * Gets the LC Info Request Form with the unique formId from the MongoDB.
+     * This method works for the subclass LCInfoRequest; that is,
+     * it retrieves an LCInfoRequest object in the 'pdflex-db > forms' collection in the MongoDB.
+     * @param formId The formId of the Form.
+     * @return The LCInfoRequest with the formId; null if it doesn't exist.
+     */
+    public LCInfoRequest getLCInfoRequestFormById(int formId) {
+        return formRepository.findLCFormByFormId(formId);
+    }
+
+    /**
+     * Retrieves Form objects from the MongoDB with the corresponding unique formIds.
+     * @param clientId is the Client whose claim we are looking at. Uses this to generate list of claimIds that verifies
+     *                 if we are looking at the correct claim.
+     * @param claimId refers to the Claim containing the forms of interest.
+     * @return A list of Form objects with the formIds specified in the getClaimFormIds call; empty if this list is empty
+     */
+    @Override
+    public List<Form> getFormsListAsForms(int clientId, int claimId) {
+        List<Integer> claimIds = getClientClaimIds(clientId);
+        List<Form> forms = new ArrayList<>();
+        if (claimIds.contains(claimId)) {
+            List<Integer> formIds = getClaimFormIds(claimId);
+            for (int formId: formIds) {
+                forms.add(getLCInfoRequestFormById(formId));
+            }
+        }
+        return forms;
     }
 
     /**
