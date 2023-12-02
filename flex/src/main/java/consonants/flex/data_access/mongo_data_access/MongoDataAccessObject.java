@@ -1,5 +1,6 @@
 package consonants.flex.data_access.mongo_data_access;
 
+import consonants.flex.use_case.retrieve_form.RetrieveFormDataAccessInterface;
 import consonants.flex.use_case.upload_form.UploadFormDataAccessInterface;
 import org.bson.types.Binary;
 import consonants.flex.entity.Client;
@@ -26,7 +27,7 @@ import java.util.*;
 
 @Service
 
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface, RetrieveFormDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -231,6 +232,20 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
             }
         }
         return forms;
+    }
+    /**
+     * Retrieves the first form object from the MongoDB for the provided claim id.
+     * @param claimId refers to the Claim containing the forms of interest.
+     * @return The first form object, retrieved with the formIds specified in the getClaimFormIds call
+     */
+    @Override
+    public Form getFirstForm(int claimId) {
+        List<Form> forms = new ArrayList<>();
+            List<Integer> formIds = getClaimFormIds(claimId);
+            for (int formId: formIds) {
+                forms.add(getLCInfoRequestFormById(formId));
+            }
+        return forms.get(0);
     }
 
     /**
