@@ -1,7 +1,16 @@
 package consonants.flex.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 
+@Document(collection = "forms")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LCInfoRequest extends Form{
 
     // **** claims checklist
@@ -44,9 +53,11 @@ public class LCInfoRequest extends Form{
     private String relationshipToInsured;
     private String kinContactNumber;
     private String kinSignature;
+    private String hospitalizationDate;
 
-    public LCInfoRequest(int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned, String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
+    public LCInfoRequest(String hospitalizationDate, int formId, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned, String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
         super(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned);
+        this.hospitalizationDate = hospitalizationDate;
         this.dateOfBirth = dateOfBirth;
         this.completedDeathCertificate = completedDeathCertificate;
         this.attachedDeathCertificate = attachedDeathCertificate;
