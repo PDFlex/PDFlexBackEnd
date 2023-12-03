@@ -84,7 +84,9 @@ public class DocumentIntelligence {
                     formFields.put("causeOfDeath", formFieldValue);
 
                 } else if (keyValuePair.getKey().getContent().equals("If yes, date admitted:")) {
+                    String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("deceasedHospitalized", true);
+                    formFields.put("hospitalizationDate", formFieldValue);
 
                 } else if (keyValuePair.getKey().getContent().equals("Name of hospital")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
@@ -190,9 +192,9 @@ public class DocumentIntelligence {
 
         }
 
-//        for (Map.Entry<String, Object> entry : formFields.entrySet()) {
-//            System.out.println(entry.getKey() + ": " + entry.getValue());
-//    }
+    //     for (Map.Entry<String, Object> entry : formFields.entrySet()) {
+    //         System.out.println(entry.getKey() + ": " + entry.getValue());
+    // }
 
         return formFields;
         }

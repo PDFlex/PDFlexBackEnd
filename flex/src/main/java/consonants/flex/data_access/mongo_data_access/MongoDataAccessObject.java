@@ -7,6 +7,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.use_case.submit_claim.SubmitClaimDataAccessInterface;
 import consonants.flex.entity.FileDocument;
 import consonants.flex.use_case.create_new_claim.CreateNewClaimDataAccessInterface;
 import consonants.flex.use_case.view_all_claims.ViewAllClaimsDataAccessInterface;
@@ -21,12 +22,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
-
 public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface, RetrieveFormDataAccessInterface {
 
     @Autowired
@@ -66,7 +69,7 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
 
         ArrayList<String> pastPhysicianNames = new ArrayList<String>();
         ArrayList<String> pastAddresses = new ArrayList<String>();
-        Form form = createLCInfoRequestForm(claimId, clientId, "", "", "", "", false, false, false, "", false, "", "", "", "", "", pastPhysicianNames, pastAddresses, "", "", "","","","","","","","","","","","");
+        Form form = createLCInfoRequestForm("", claimId, clientId, "", "", "", "", false, false, false, "", false, "", "", "", "", "", pastPhysicianNames, pastAddresses, "", "", "","","","","","","","","","","","");
 
         mongoTemplate.update(Client.class)
                 .matching(Criteria.where("clientId").is(clientId))
@@ -82,9 +85,9 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
      * Parameter comments omitted due to length.
      * @return The Form object with the specified data.
      */
-    public Form createLCInfoRequestForm(int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned, String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
+    public Form createLCInfoRequestForm(String hospitalizationDate, int claimId, int clientId, String deceasedName, String dateOfDeath, String dateSigned, String dateOfBirth, boolean completedDeathCertificate, boolean attachedDeathCertificate, boolean completedClaimSubmission, String causeOfDeath, boolean deceasedHospitalized, String hospitalName, String hospitalAddress, String attendingPhysicianName, String attendingPhysicianAddress, String attendingPhysicianContactNumber, ArrayList<String> pastPhysicianNames, ArrayList<String> pastPhysicianAddresses, String familyPhysicianName, String familyPhysicianAddress, String familyPhysicianContactNumber, String occupation, String employer, String dateLastWorked, String workAddress, String employerContactNumber, String reasonInsuredStoppedWorking, String nameOfKin, String kinAddress, String relationshipToInsured, String kinContactNumber, String kinSignature) {
         int formId = getAllForms().size() + 1;
-        Form form = formRepository.insert(new LCInfoRequest(formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned, dateOfBirth, completedDeathCertificate, attachedDeathCertificate, completedClaimSubmission,causeOfDeath, deceasedHospitalized, hospitalName, hospitalAddress, attendingPhysicianName, attendingPhysicianAddress, attendingPhysicianContactNumber, pastPhysicianNames, pastPhysicianAddresses, familyPhysicianName, familyPhysicianAddress, familyPhysicianContactNumber, occupation, employer, dateLastWorked, workAddress, employerContactNumber, reasonInsuredStoppedWorking, nameOfKin, kinAddress, relationshipToInsured, kinContactNumber, kinSignature));
+        Form form = formRepository.insert(new LCInfoRequest(hospitalizationDate, formId, claimId, clientId, deceasedName, dateOfDeath, dateSigned, dateOfBirth, completedDeathCertificate, attachedDeathCertificate, completedClaimSubmission,causeOfDeath, deceasedHospitalized, hospitalName, hospitalAddress, attendingPhysicianName, attendingPhysicianAddress, attendingPhysicianContactNumber, pastPhysicianNames, pastPhysicianAddresses, familyPhysicianName, familyPhysicianAddress, familyPhysicianContactNumber, occupation, employer, dateLastWorked, workAddress, employerContactNumber, reasonInsuredStoppedWorking, nameOfKin, kinAddress, relationshipToInsured, kinContactNumber, kinSignature));
 
         mongoTemplate.update(Claim.class)
                 .matching(Criteria.where("claimId").is(claimId))
@@ -92,6 +95,44 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
                 .first();
 
         return form;
+    }
+
+    /**
+     * Generates a list of forms in the claim by calling on the getFormsListAsForms method after verifying that choice
+     * of clientId and claimId are valid and checks if each form in the claim is complete.
+     * If yes, submits the claim and updates the claimStatus accordingly to claimStatus.SUBMITTED.
+     * This value should be checked in the EditFormUseCase and UploadFormUseCase to prevent any further edits
+     * to forms after the claim has been submitted.
+     * @param clientId refers to the Client to whom the Claim belongs to.
+     * @param claimId refers to the Claim that one wants to submit.
+     * @return A Boolean true if claim status was set to claimStatus.SUBMITTED successfully. Returns
+     * false if any form in the claim a form status other than formStatus.CONFIRMED.
+     */
+    @Override
+    public Boolean submitClaim(int clientId, int claimId) {
+        List<Form> forms = new ArrayList<>();
+        if (claimExistsById(claimId) && clientExistsById(clientId)) {
+            if (!getFormsListAsForms(clientId, claimId).isEmpty()) {
+                forms = getFormsListAsForms(clientId, claimId);
+            }
+        }
+
+        for (Form form: forms) {
+            if (!(form.getStatus() == Form.formStatus.CONFIRMED)) {
+                return false;
+            }
+        }
+        Claim claim = claimRepository.findClaimByClaimId(claimId);
+        return modifyClaimStatus(claimId, "SUBMITTED");
+    }
+
+    /**
+     * @param claimId refers to the Claim you are checking the status of.
+     * @return A String of the claim status. Options are INCOMPLETE, COMPLETE, SUBMITTED.
+     */
+    public String claimStatus(int claimId) {
+        Claim claim = getClaimById(claimId);
+        return claim.claimStatusToString();
     }
 
     /**
@@ -120,6 +161,19 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
 
         return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
+    }
+
+    /**
+     * Like previous method, this finds a Client using a criteria. This method is pre-set
+     * to the firstName field. Returns a Client Object. Can change return type if needed.
+     * @return The Client with modified fields.
+     */
+    public Boolean modifyClaimStatus(int claimId, String status) {
+        Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+        Update updateDefinition = new Update().set("status", status);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+        Claim claim = mongoTemplate.findAndModify(query, updateDefinition, options, Claim.class);
+        return true;
     }
 
     /**
