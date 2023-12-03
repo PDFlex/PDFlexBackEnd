@@ -295,11 +295,17 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     @Override
     public Form getFirstForm(int claimId) {
         List<Form> forms = new ArrayList<>();
-            List<Integer> formIds = getClaimFormIds(claimId);
-            for (int formId: formIds) {
-                forms.add(getLCInfoRequestFormById(formId));
-            }
-        return forms.get(0);
+        List<Integer> formIds = getClaimFormIds(claimId);
+        for (int formId: formIds) {
+            forms.add(getLCInfoRequestFormById(formId));
+        }
+        try {
+            return forms.get(0);
+        }
+        catch(Exception e) {
+            return null;
+        }
+
     }
 
     /**
