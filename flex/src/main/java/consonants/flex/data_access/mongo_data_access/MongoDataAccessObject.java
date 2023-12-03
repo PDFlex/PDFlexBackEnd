@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface, RetrieveFormDataAccessInterface {
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface, SubmitClaimDataAccessInterface, RetrieveFormDataAccessInterface {
 
     @Autowired
     private ClientRepository clientRepository;
