@@ -192,9 +192,9 @@ public class DocumentIntelligence {
 
         }
 
-        for (Map.Entry<String, Object> entry : formFields.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-    }
+//        for (Map.Entry<String, Object> entry : formFields.entrySet()) {
+//            System.out.println(entry.getKey() + ": " + entry.getValue());
+//    }
 
         return formFields;
         }

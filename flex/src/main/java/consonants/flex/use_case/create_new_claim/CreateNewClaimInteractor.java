@@ -10,6 +10,7 @@ public class CreateNewClaimInteractor implements CreateNewClaimInputBoundary{
     final CreateNewClaimDataAccessInterface createNewClaimDataAccessObject;
 
     public CreateNewClaimInteractor(CreateNewClaimDataAccessInterface createNewClaimDataAccessInterface) {
+
         this.createNewClaimDataAccessObject = createNewClaimDataAccessInterface;
     }
     @Override
