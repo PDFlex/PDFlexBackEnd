@@ -356,13 +356,14 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
 
         for (Map.Entry<String, Object> formField : formFields.entrySet()) {
             // access form we want to populate by formId
-            Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
-
-            Update updateDefinition = new Update().set(formField.getKey(), formField.getValue());
-            FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
-
-            mongoTemplate.findAndModify(query, updateDefinition, options, Form.class, "forms");
-
+            if (!formField.getKey().equals("claimId")) {
+                Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
+    
+                Update updateDefinition = new Update().set(formField.getKey(), formField.getValue());
+                FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+    
+                mongoTemplate.findAndModify(query, updateDefinition, options, Form.class, "forms");
+            }
         }
     }
 
