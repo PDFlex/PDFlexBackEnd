@@ -10,8 +10,8 @@ public class SaveFormInputData {
 
     final private int claimId;
 
-    public SaveFormInputData(Map<String, Object> formFields) {
+    public SaveFormInputData(Map<String, Object> formFields, int claimId) {
         this.formFields = formFields;
-        this.claimId = Integer.parseInt((String) formFields.get("claimId"));
+        this.claimId = claimId;
     }
 }

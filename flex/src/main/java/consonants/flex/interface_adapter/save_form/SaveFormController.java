@@ -21,9 +21,9 @@ public class SaveFormController {
         this.saveFormUseCaseInteractor = saveFormUseCaseInteractor;
     }
 
-    @PostMapping("/post")
-    public ResponseEntity<Object> getFormInfo(@RequestBody Map<String, Object> formFields){
-        SaveFormInputData saveFormInputData = new SaveFormInputData(formFields);
+    @PostMapping("/{claimId}")
+    public ResponseEntity<Object> getFormInfo(@RequestBody Map<String, Object> formFields, @PathVariable int claimId){
+        SaveFormInputData saveFormInputData = new SaveFormInputData(formFields, claimId);
         return saveFormUseCaseInteractor.execute(saveFormInputData);
     }
 }
