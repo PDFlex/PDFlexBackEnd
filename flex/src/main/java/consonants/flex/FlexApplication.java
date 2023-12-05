@@ -8,6 +8,7 @@ public class FlexApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FlexApplication.class, args);
+		
 	}
 
 }
