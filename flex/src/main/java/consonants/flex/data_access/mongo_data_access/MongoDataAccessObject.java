@@ -7,6 +7,7 @@ import consonants.flex.entity.Client;
 import consonants.flex.entity.Claim;
 import consonants.flex.entity.Form;
 import consonants.flex.entity.LCInfoRequest;
+import consonants.flex.use_case.save_form.SaveFormDataAccessInterface;
 import consonants.flex.use_case.submit_claim.SubmitClaimDataAccessInterface;
 import consonants.flex.entity.FileDocument;
 import consonants.flex.use_case.create_new_claim.CreateNewClaimDataAccessInterface;
@@ -22,16 +23,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface, SubmitClaimDataAccessInterface, RetrieveFormDataAccessInterface {
-
+public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, LoginClientDataAccessInterface, ViewClaimsDashboardDataAccessInterface, ViewFormsDashboardDataAccessInterface, CreateNewClaimDataAccessInterface, UploadFormDataAccessInterface, SubmitClaimDataAccessInterface, RetrieveFormDataAccessInterface, SaveFormDataAccessInterface{
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -337,7 +333,7 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         List<Client> lst = mongoTemplate.find(query, Client.class);
         return !lst.isEmpty();
     }
-
+      
     public Boolean claimExistsById(int claimId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("claimId").is(claimId));
@@ -355,6 +351,7 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
     }
 
+    @Override
     public void modifyForm(int claimId, Map<String, Object> formFields) {
 
         for (Map.Entry<String, Object> formField : formFields.entrySet()) {
@@ -367,7 +364,6 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     
                 mongoTemplate.findAndModify(query, updateDefinition, options, Form.class, "forms");
             }
-
         }
     }
 
@@ -406,6 +402,5 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         String pdfUrl = runSearchablePDF.sendPost();
         return runDocIntelligence.OCRLCInfoRequest(pdfUrl);
     }
-
 }
 
