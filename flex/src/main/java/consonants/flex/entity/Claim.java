@@ -7,7 +7,10 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Document(collection = "claims")
@@ -22,6 +25,7 @@ public class Claim {
     private int claimId;
     private int clientId;
     private claimStatus status; // "Submitted", "Complete" or "Incomplete" (Look into Enum)
+    private String createdClaimDate;
 
 
     public Claim(int clientId, int claimId){
@@ -29,6 +33,8 @@ public class Claim {
         this.claimId = claimId;
         this.status = claimStatus.INCOMPLETE;
         this.clientId = clientId;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.createdClaimDate = LocalDate.now().format(formatter);
     }
 
     public int getClaimId() {
