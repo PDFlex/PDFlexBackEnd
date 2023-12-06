@@ -160,15 +160,28 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     }
 
     /**
-     * Like previous method, this finds a Client using a criteria. This method is pre-set
-     * to the firstName field. Returns a Client Object. Can change return type if needed.
-     * @return The Client with modified fields.
+     * @param claimId to find appropriate claim to modify
+     * @param status for status to update claim to
+     * @return Boolean true if claim was updated.
      */
     public Boolean modifyClaimStatus(int claimId, String status) {
         Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
         Update updateDefinition = new Update().set("status", status);
         FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
         Claim claim = mongoTemplate.findAndModify(query, updateDefinition, options, Claim.class);
+        return true;
+    }
+
+    /**
+     * @param formId to find appropriate claim to modify
+     * @param status for status to update claim to
+     * @return Boolean true if claim was updated.
+     */
+    public Boolean modifyFormStatus(int formId, String status) {
+        Query query = new Query().addCriteria(Criteria.where("formId").is(formId));
+        Update updateDefinition = new Update().set("status", status);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+        Form form = mongoTemplate.findAndModify(query, updateDefinition, options, Form.class);
         return true;
     }
 
