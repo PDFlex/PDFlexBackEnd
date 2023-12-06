@@ -21,7 +21,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 /**
- * Interactor test for the UploadFormClaim use case using Mockito.
+ * Interactor test for the UploadForm use case using Mockito.
  */
 @ExtendWith(MockitoExtension.class)
 public class UploadFormInteractorTest {
