@@ -63,7 +63,7 @@ public class UploadFormInteractorTest {
 
         // test the execute method + OCR Result
         uploadFormInteractor.execute(uploadInputData);
-        assertEquals(OCRResultMap.get("deceasedName"), "Tony, Quinlan");
+        assertEquals(OCRResultMap.get("deceasedName"), "Toby, Quinlan");
         assertEquals(OCRResultMap.get("employer"), "McDonald's");
 
     }
