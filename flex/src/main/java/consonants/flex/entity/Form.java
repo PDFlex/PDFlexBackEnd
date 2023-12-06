@@ -7,6 +7,9 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 
 @Document(collection = "forms")
 @Data
@@ -24,6 +27,7 @@ public class Form {
     private String deceasedName;
     private String dateOfDeath;
     private String dateSigned;
+    private String createdFormDate;
 
 
 
@@ -36,6 +40,8 @@ public class Form {
         this.deceasedName = deceasedName;
         this.dateOfDeath = dateOfDeath;
         this.dateSigned = dateSigned;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.createdFormDate = LocalDate.now().format(formatter);
     }
 
     public int getFormId() {
