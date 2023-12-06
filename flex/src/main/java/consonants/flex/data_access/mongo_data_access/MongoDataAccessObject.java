@@ -173,6 +173,19 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
     }
 
     /**
+     * Like previous method, this finds a Form using a criteria. This method is pre-set
+     * to the firstName field. Returns aa Boolean. Can change return type if needed.
+     * @param formId
+     * @return Booleam.
+     */
+    public Boolean modifyFormStatus(int formId, String status) {
+        Query query = new Query().addCriteria(Criteria.where("formId").is(formId));
+        Update updateDefinition = new Update().set("status", status);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true).upsert(false);
+        Form form = mongoTemplate.findAndModify(query, updateDefinition, options, Form.class);
+        return true;
+    }
+    /**
      * @return A List of all the Clients in the MongoDB.
      */
     public List<Client> getAllClients() {return clientRepository.findAll();}
