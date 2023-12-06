@@ -23,26 +23,12 @@ public class ViewAllClaimsUseCaseTests {
     private MockMvc mockMvc;
 
     /**
-     * Tests if all the data associated with Claim #1001 exists.
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
-     */
-    @Test
-    void testClaim1001DataExists() throws Exception {
-        String subdirectory = "/claims";
-        String stringToCheck = "{\"id\":{\"timestamp\":1700286748,\"date\":\"2023-11-18T05:52:28.000+00:00\"},\"forms\":[3],\"claimId\":1001,\"clientId\":1234,\"status\":\"INCOMPLETE\"}";
-
-        this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString(stringToCheck)));
-    }
-
-    /**
      * Tests if all the data associated with Claim #1002 exists.
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
      */
     @Test
     void testClaim1002DataExists() throws Exception {
         String subdirectory = "/claims";
-        String stringToCheck = "{\"id\":{\"timestamp\":1700329276,\"date\":\"2023-11-18T17:41:16.000+00:00\"},\"forms\":[2],\"claimId\":1002,\"clientId\":5678,\"status\":\"INCOMPLETE\"}";
+        String stringToCheck = "{\"id\":{\"timestamp\":1701904501,\"date\":\"2023-12-06T23:15:01.000+00:00\"},\"forms\":[2],\"claimId\":1002,\"clientId\":10002,\"status\":\"INCOMPLETE\",\"createdClaimDate\":\"2023-12-06\"}";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(stringToCheck)));

@@ -23,14 +23,13 @@ public class RetrieveFormUseCaseTests {
     private MockMvc mockMvc;
 
     /**
-     * Tests if Claim #1001 has its appropriate Form data.
-     * I decided to test this by arbitrarily choosing a String that should be checked from the output on the page.
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
+     * Tests if Claim #1002 has its appropriate Form data.
+     * We decided to test this by arbitrarily choosing a String that should be checked from the output on the page.
      */
     @Test
     void testFormDataExists() throws Exception {
-        String subdirectory = "/form-info/1001";
-        String stringToCheck = "ber\":\"(416) 485-6666\",\"occupation\":\"McDonald's employee\",\"employer\":\"McDonald's\",\"dateLastWorked\":\"01/02/2000\",\"workAddress\":\"196 Bloor St W,";
+        String subdirectory = "/form-info/1002/retrieve";
+        String stringToCheck = "\"formId\":2,\"clientId\":10002,\"claimId\":1002,";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(stringToCheck)));
@@ -38,13 +37,11 @@ public class RetrieveFormUseCaseTests {
 
     /**
      * Tests that no information is correctly returned when attempting to access the Form data of a
-     * Claim that *does not* exist in the system.
-     * In this example, Claim #222 do not exist in our database.
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
+     * Claim that *does not* exist in the system. In this example, Claim #222 do not exist in our database.
      */
     @Test
     void testClaimDoNotExist() throws Exception {
-        String subdirectory = "/form-info/222";
+        String subdirectory = "/form-info/222/retrieve";
         String stringToCheck = "";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())

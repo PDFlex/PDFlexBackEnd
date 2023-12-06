@@ -23,26 +23,12 @@ public class ViewClaimsDashboardUseCaseTests {
     private MockMvc mockMvc;
 
     /**
-     * Tests if the Client #1234 has a Claim #1010 and its associated data.
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
+     * Tests if the Client #10002 has a Claim #1003 and its associated data.
      */
     @Test
-    void testClient1234DataExists() throws Exception {
-        String subdirectory = "/1234/claims";
-        String stringToCheck = "{\"id\":{\"timestamp\":1700435491,\"date\":\"2023-11-19T23:11:31.000+00:00\"},\"forms\":[12],\"claimId\":1010,\"clientId\":1234,\"status\":\"INCOMPLETE\"}";
-
-        this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString(stringToCheck)));
-    }
-
-    /**
-     * Tests if the Client #5678 has a Claim #1022 and its associated data.
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
-     */
-    @Test
-    void testClient5678DataExists() throws Exception {
-        String subdirectory = "/5678/claims";
-        String stringToCheck = "{\"id\":{\"timestamp\":1700286748,\"date\":\"2023-11-18T05:52:28.000+00:00\"},\"forms\":[3],\"claimId\":1001,\"clientId\":1234,\"status\":\"INCOMPLETE\"}";
+    void testClient10002DataExists() throws Exception {
+        String subdirectory = "/10002/claims";
+        String stringToCheck = "[{\"id\":{\"timestamp\":1701904501,\"date\":\"2023-12-06T23:15:01.000+00:00\"},\"forms\":[2],\"claimId\":1002,\"clientId\":10002,\"status\":\"INCOMPLETE\",\"createdClaimDate\":\"2023-12-06\"},{\"id\":{\"timestamp\":1701904511,\"date\":\"2023-12-06T23:15:11.000+00:00\"},\"forms\":[3],\"claimId\":1003,\"clientId\":10002,\"status\":\"INCOMPLETE\",\"createdClaimDate\":\"2023-12-06\"}]";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(stringToCheck)));
@@ -51,7 +37,6 @@ public class ViewClaimsDashboardUseCaseTests {
     /**
      * Tests that no information is correctly returned when attempting to access the Claims of a Client that
      * does not exist in the database (e.g. Client #9999).
-     * Note: We are going to adjust this test once the information in our database has been finalized for our Demo.
      */
     @Test
     void testClientDataDoesNotExist() throws Exception {
