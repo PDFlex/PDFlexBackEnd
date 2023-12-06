@@ -72,22 +72,24 @@ public class DocumentIntelligence {
                     formFields.put("deceasedName", formFieldValue);
 
                 } else if (keyValuePair.getKey().getContent().equals("Date of birth (mo/day/yr)")) {
-                    String formFieldValue = keyValuePair.getValue().getContent();
-                    formFields.put("dateOfBirth", formFieldValue);
+                    String[] formFieldValue = keyValuePair.getValue().getContent().split("/");
+                    String rearrangedFormField = formFieldValue[2] + '-' + formFieldValue[0] + '-' + formFieldValue[1];
+                    formFields.put("dateOfBirth", rearrangedFormField);
 
                 } else if (keyValuePair.getKey().getContent().equals("Date of death (mo/day/yr)")) {
-                    String formFieldValue = keyValuePair.getValue().getContent();
-                    formFields.put("dateOfDeath", formFieldValue);
+                    String[] formFieldValue = keyValuePair.getValue().getContent().split("/");
+                    String rearrangedFormField = formFieldValue[2] + '-' + formFieldValue[0] + '-' + formFieldValue[1];
+                    formFields.put("dateOfDeath", rearrangedFormField);
 
                 } else if (keyValuePair.getKey().getContent().equals("Cause of death")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("causeOfDeath", formFieldValue);
 
                 } else if (keyValuePair.getKey().getContent().equals("If yes, date admitted:")) {
-                    String formFieldValue = keyValuePair.getValue().getContent();
+                    String[] formFieldValue = keyValuePair.getValue().getContent().split("/");
+                    String rearrangedFormField = formFieldValue[2] + '-' + formFieldValue[0] + '-' + formFieldValue[1];
                     formFields.put("deceasedHospitalized", true);
-                    formFields.put("hospitalizationDate", formFieldValue);
-
+                    formFields.put("hospitalizationDate", rearrangedFormField);
                 } else if (keyValuePair.getKey().getContent().equals("Name of hospital")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("hospitalName", formFieldValue);
@@ -133,8 +135,9 @@ public class DocumentIntelligence {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("occupation", formFieldValue);
                 } else if (keyValuePair.getKey().getContent().equals("Date last worked (mo/day/yr)")) {
-                    String formFieldValue = keyValuePair.getValue().getContent();
-                    formFields.put("dateLastWorked", formFieldValue);
+                    String[] formFieldValue = keyValuePair.getValue().getContent().split("/");
+                    String rearrangedFormField = formFieldValue[2] + '-' + formFieldValue[0] + '-' + formFieldValue[1];
+                    formFields.put("dateLastWorked", rearrangedFormField);
                 } else if (keyValuePair.getKey().getContent().equals("Employer")) {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("employer", formFieldValue);
@@ -160,8 +163,9 @@ public class DocumentIntelligence {
                     String formFieldValue = keyValuePair.getValue().getContent();
                     formFields.put("kinSignature", formFieldValue);
                 } else if (keyValuePair.getKey().getContent().equals("Date signed (mo/day/yr)")) {
-                    String formFieldValue = keyValuePair.getValue().getContent();
-                    formFields.put("dateSigned", formFieldValue);
+                    String[] formFieldValue = keyValuePair.getValue().getContent().split("/");
+                    String rearrangedFormField = formFieldValue[2] + '-' + formFieldValue[0] + '-' + formFieldValue[1];
+                    formFields.put("dateSigned", rearrangedFormField);
                 }
 
                 if (keyValuePair.getKey().getContent().equals("Normal retirement") && keyValuePair.getValue().getContent().equals(":selected:")) {
@@ -192,9 +196,9 @@ public class DocumentIntelligence {
 
         }
 
-    //     for (Map.Entry<String, Object> entry : formFields.entrySet()) {
-    //         System.out.println(entry.getKey() + ": " + entry.getValue());
-    // }
+         for (Map.Entry<String, Object> entry : formFields.entrySet()) {
+             System.out.println(entry.getKey() + ": " + entry.getValue());
+     }
 
         return formFields;
         }
