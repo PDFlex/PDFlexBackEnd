@@ -14,7 +14,7 @@ public class RetrieveFormController {
     @Autowired
     private RetrieveFormInputBoundary retrieveFormInteractor;
 
-    @GetMapping("/{claimId}")
+    @GetMapping("/{claimId}/retrieve")
     public ResponseEntity<Form> RetrieveFormInfo(@PathVariable int claimId) {
 
         RetrieveFormInputData inputData = new RetrieveFormInputData(claimId);
