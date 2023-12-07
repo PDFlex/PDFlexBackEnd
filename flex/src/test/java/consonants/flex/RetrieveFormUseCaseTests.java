@@ -28,7 +28,7 @@ public class RetrieveFormUseCaseTests {
      */
     @Test
     void testFormDataExists() throws Exception {
-        String subdirectory = "/form-info/1002/retrieve";
+        String subdirectory = "/retrieve-info/1002";
         String stringToCheck = "\"formId\":2,\"clientId\":10002,\"claimId\":1002,";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
@@ -41,7 +41,7 @@ public class RetrieveFormUseCaseTests {
      */
     @Test
     void testClaimDoNotExist() throws Exception {
-        String subdirectory = "/form-info/222/retrieve";
+        String subdirectory = "/retrieve-info/222";
         String stringToCheck = "";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
