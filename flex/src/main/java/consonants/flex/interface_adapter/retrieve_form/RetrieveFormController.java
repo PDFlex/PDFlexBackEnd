@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins ="*")
-@RequestMapping("/form-info")
+@RequestMapping("/retrieve-info")
 public class RetrieveFormController {
     @Autowired
     private RetrieveFormInputBoundary retrieveFormInteractor;
 
-    @GetMapping("/{claimId}/retrieve")
+    @GetMapping("/{claimId}")
     public ResponseEntity<Form> RetrieveFormInfo(@PathVariable int claimId) {
 
         RetrieveFormInputData inputData = new RetrieveFormInputData(claimId);
