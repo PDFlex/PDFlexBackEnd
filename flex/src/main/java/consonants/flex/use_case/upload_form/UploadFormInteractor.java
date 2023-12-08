@@ -45,9 +45,9 @@ public class UploadFormInteractor implements UploadFormInputBoundary{
         Binary data;
 
         data = dataAccessObject.serializePDF();
-        uploadDataAccessObject.saveDocument(uploadInputData.getName(), uploadInputData.getClaimId(), data, LocalDate.now()); // TODO: check if accessing the claimId like this violates CA
+        uploadDataAccessObject.saveDocument(uploadInputData.getName(), uploadInputData.getClaimId(), data, LocalDate.now());
 
-        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall(uploadInputData.getClaimId()); // TODO: check if accessing the claimId like this violates CA
+        Map<String, Object> formFields = uploadDataAccessObject.OCRLCInfoRequestCall(uploadInputData.getClaimId());
         uploadDataAccessObject.modifyForm(uploadInputData.getClaimId(), formFields);
     }
 }
