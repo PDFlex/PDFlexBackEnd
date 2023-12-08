@@ -7,6 +7,7 @@ import com.azure.ai.formrecognizer.documentanalysis.models.DocumentKeyValuePair;
 import com.azure.ai.formrecognizer.documentanalysis.models.OperationResult;
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.util.polling.SyncPoller;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +23,8 @@ public class DocumentIntelligence {
 
     public Map<String, Object> OCRLCInfoRequest(String pdfURL) {
 
-        String endpoint = "https://pdflex.cognitiveservices.azure.com/";
-        String key = "c2ec275a27df4c219daa3a547dc3965f";
+        String endpoint = System.getenv("azureEndpoint");
+        String key = System.getenv("azureKey");
 
         // create your `DocumentAnalysisClient` instance and `AzureKeyCredential` variable
         DocumentAnalysisClient client = new DocumentAnalysisClientBuilder()

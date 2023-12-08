@@ -2,6 +2,8 @@ package consonants.flex.data_access.mongo_data_access;
 
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.util.BsonUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -19,12 +21,11 @@ import java.util.Iterator;
  * Note: The bulk of this code is from the example repositories provided by OCRSpace.
  */
 public class SearchablePDF{
-
     private final String base64PDF;
-    String url = "https://api.ocr.space/parse/image"; // OCR API Endpoints
+    String url = System.getenv("ocrspaceEndpoint"); // OCR API Endpoints
+
 
         public SearchablePDF(String base64PDF) {
-
             this.base64PDF = base64PDF;
         }
 
