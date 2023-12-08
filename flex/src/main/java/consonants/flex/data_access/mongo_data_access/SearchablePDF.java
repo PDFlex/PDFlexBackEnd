@@ -11,6 +11,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
 
+/**
+ * This class uses the OCRSpace API (which takes the BSON representation of the PDF as input)
+ * to convert the PDF into a searchable URL. The searchable URL can then be sent to Azure's Document Intelligence
+ * API as input.
+ *
+ * Note: The bulk of this code is from the example repositories provided by OCRSpace.
+ */
 public class SearchablePDF{
 
     private final String base64PDF;
@@ -35,9 +42,8 @@ public class SearchablePDF{
 
         JSONObject postDataParams = new JSONObject();
 
-        postDataParams.put("apikey", "K88786854088957");//TODO: add to .env file
+        postDataParams.put("apikey", "K88786854088957");
         postDataParams.put("isOverlayRequired", false);
-        //TODO: hard-code base64 for now since postman is messing up the format
         postDataParams.put("base64Image", "data:application/pdf;" + base64PDF);
         //postDataParams.put("OCREngine", "2");
         postDataParams.put("isCreateSearchablePdf", true);

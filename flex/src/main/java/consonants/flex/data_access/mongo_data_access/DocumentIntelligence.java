@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class uses Azure's Document Intelligence API which extracts all the key-value
+ * pairs from the PDF form and returns them as a map which will be used to populate
+ * the empty form object.
+ */
 public class DocumentIntelligence {
 
     public Map<String, Object> OCRLCInfoRequest(String pdfURL) {
@@ -196,9 +201,9 @@ public class DocumentIntelligence {
 
         }
 
-         for (Map.Entry<String, Object> entry : formFields.entrySet()) {
-             System.out.println(entry.getKey() + ": " + entry.getValue());
-     }
+//         for (Map.Entry<String, Object> entry : formFields.entrySet()) {
+//             System.out.println(entry.getKey() + ": " + entry.getValue());
+//     }
 
         return formFields;
         }

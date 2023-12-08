@@ -364,6 +364,9 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         return mongoTemplate.findAndModify(query, updateDefinition, options, Client.class);
     }
 
+    /**
+     * This class modifies and updates an existing form object from our database.
+     */
     @Override
     public void modifyForm(int claimId, Map<String, Object> formFields) {
 
@@ -380,31 +383,39 @@ public class MongoDataAccessObject implements ViewAllClaimsDataAccessInterface, 
         }
     }
 
-    // saves pdf to MongoDB in the documents collection
+    /**
+     * This class saves PDFs to our documents collection in the database.
+     */
     public void saveDocument(String fileName, int claimId, Binary data, LocalDate date){
         FileDocument fileDocument = new FileDocument(fileName, claimId, data, date);
         documentRepository.save(fileDocument);
 
     }
 
-    // extracts base64 string from the documents collection for the relevant claim
+    /**
+     * This class converts the BSON representation of a PDF stored in our database to a base64 string,
+     * so we can run OCRSpace on the PDF.
+     */
     @Override
     public String ExtractPDFBase64(int claimId) {
         // retrieve document object, so we can get the value from the "content" key
-
         Query query = new Query().addCriteria(Criteria.where("claimId").is(claimId));
 
         List<FileDocument> docs = mongoTemplate.find(query, FileDocument.class, "documents");
 
-        Binary binaryStr = docs.get(0).getContent(); // TODO: check if the getContent violates CA
+        Binary binaryStr = docs.get(0).getContent();
         String base64Str = Base64.getEncoder().encodeToString(binaryStr.getData());
 
         return base64Str;
     }
 
-    public Map<String, Object> OCRLCInfoRequestCall(int claimId) throws Exception{ // TODO: look into `throws Exception`
+    /**
+     * This class calls Azure's Document Intelligence API on a PDF and returns the key-value pairs as a map
+     * which will be used to update the form object.
+     */
+    public Map<String, Object> OCRLCInfoRequestCall(int claimId) throws Exception{
         // gets base64 pdf string
-        String base64 = ExtractPDFBase64(claimId); // TODO: when we have client/claim persistence on the frontend, access the information from there instead of hardcoding the claimId
+        String base64 = ExtractPDFBase64(claimId);
 
         // instantiate a SearchablePDF object to get the searchable PDF URL from OCRSpace
         SearchablePDF runSearchablePDF = new SearchablePDF(base64);
