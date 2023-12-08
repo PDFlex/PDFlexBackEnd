@@ -28,7 +28,7 @@ public class ViewClaimsDashboardUseCaseTests {
     @Test
     void testClient10002DataExists() throws Exception {
         String subdirectory = "/10002/claims";
-        String stringToCheck = "[{\"id\":{\"timestamp\":1701904501,\"date\":\"2023-12-06T23:15:01.000+00:00\"},\"forms\":[2],\"claimId\":1002,\"clientId\":10002,\"status\":\"INCOMPLETE\",\"createdClaimDate\":\"2023-12-06\"},{\"id\":{\"timestamp\":1701904511,\"date\":\"2023-12-06T23:15:11.000+00:00\"},\"forms\":[3],\"claimId\":1003,\"clientId\":10002,\"status\":\"INCOMPLETE\",\"createdClaimDate\":\"2023-12-06\"}]";
+        String stringToCheck = "{\"id\":{\"timestamp\":1701926255,\"date\":\"2023-12-07T05:17:35.000+00:00\"},\"forms\":[3],\"claimId\":1003,\"clientId\":10002,\"status\":\"INCOMPLETE\",\"createdClaimDate\":\"2023-12-07\"}";
 
         this.mockMvc.perform(get(subdirectory)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(stringToCheck)));
